@@ -2,10 +2,76 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Komodo Hub</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Top Navigation Bar */
+        .topnav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2e8b57; /* Green base color */
+            padding: 0 20px;
+            height: 60px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Logo Box */
+        .topnav a:first-child {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+            margin-right: auto;
+        }
+
+        /* Navigation Links */
+        .topnav a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        /* Input Fields */
+        .topnav input[type="text"], .topnav input[type="password"] {
+            padding: 8px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        .topnav a:hover, .topnav input:hover {
+            background-color: #3cb371; /* Lighter green */
+        }
+
+        .topnav a.active {
+            background-color: #006400; /* Darker green for active links */
+        }
+
+        /* Adjust Spacing for Right-Aligned Elements */
+        .topnav a:not(:first-child), .topnav input {
+            margin-left: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Komodo Hub</h1>
+<div class="topnav">
+    <a href="#home">Logo</a>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <a href="active">Sign In</a>
+    <a href="active">Sign Up</a>
+</div> 
 </body>
 </html>
-
