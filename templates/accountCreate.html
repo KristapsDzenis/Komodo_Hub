@@ -3,30 +3,33 @@
 <head>
 
     <meta charset="UTF-8">
+    <!-- links to css and js files -->
+    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
+    <link id="style" href="../static/indexAndAccCreate.css" rel="stylesheet" type="text/css">
+    <script src="../static/JScode.js" type="text/javaScript"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="frame.css" rel="stylesheet" type="text/css">
-    <link id="style" href="indexAndAccCreate.css" rel="stylesheet" type="text/css">
-    <script src="JScode.js" type="text/javaScript"></script>
     <title>Komodo Hub</title>
 
 </head>
 
 <body>
 
+    <!-- top navigation bar -->
     <div class="topnav">
-        <a href="#home">Komodo Hub</a>
+        <a href="">Komodo Hub</a>
         <input type="text" placeholder="Username">
         <input type="password" placeholder="Password">
         <a href="active">Sign In</a>
         <a href="accountCreate.html">Sign Up</a>
     </div>
 
+    <!-- account creation form -->
     <div id="container">
 
-        <form action="MAILTO:kristapsdzenis91@gmail.com" method="post">
+        <form action="/create_account" method="post"><!-- links to flask function with button click at the bottom of the form -->
 
             <fieldset id="profile_image">
-                <input type="file" id="imageUpload" name="image" accept="image/*"  onclick="Show_preview()"  required>
+                <input type="file" id="imageUpload" name="image" accept="image/*"  onclick="Show_preview()"  >
                 <img id="preview" src="#" alt="">
             </fieldset>
 
@@ -48,7 +51,7 @@
             <fieldset id="form_2">
                 <br>
                 <label for="pEmail" class="align" >*Email</label>
-                <input id="pEmail" size="30" type="email" placeholder="E-mail" required>
+                <input id="pEmail" size="30" type="email"  name="Email" placeholder="E-mail" required>
                 <br>
                 <br>
                  <label for="fName" class="align" >*First name</label>
@@ -80,11 +83,11 @@
                 <p> If user type admin, teacher or student provide your ID number bellow:</p>
                 <br>
                 <label for="ID" class="align" >ID Number</label>
-                <input  type="text" id="ID" maxlength="10" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,10}" size="20"
+                <input  type="text" id="ID" maxlength="10" minlength="6" name="ID Number" pattern="[[(A-Za-z)(0-9)\s]{6,10}" size="20"
                         title="Can only enter letters and numbers" placeholder="ID Number">
             </fieldset>
 
-            <button type="submit" value="Send" class="move">Submit</button>
+            <button type="submit" class="">Submit</button>
 
         </form>
 
