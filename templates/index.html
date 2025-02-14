@@ -4,7 +4,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="frame.css" rel="stylesheet" type="text/css">
+    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
     <title>Komodo Hub</title>
 
 </head>
@@ -12,11 +12,11 @@
 <body>
 
     <div class="topnav">
-        <a href="#home">Logo</a>
+        <a href="#home">Komodo Hub</a>
         <input type="text" placeholder="Username">
         <input type="password" placeholder="Password">
         <a href="active">Sign In</a>
-        <a href="active">Sign Up</a>
+        <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
     </div>
 
 </body>
