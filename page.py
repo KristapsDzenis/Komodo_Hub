@@ -1,6 +1,8 @@
+# Python Flask file
 from flask import Flask, render_template, request
 import webbrowser
 import threading
+import SQL
 
 app = Flask(__name__)
 
@@ -21,7 +23,7 @@ def index():
 def render_acc_create_page():
     return render_template('accountCreate.html')
 
-# stores data from html form into variables
+# stores data from html form into SQLite database
 @app.route('/create_account', methods=['POST'])
 def create_account():
     username = request.form.get('Username')
@@ -32,13 +34,16 @@ def create_account():
     Org_School = request.form.get('OrgName')
     acc_Type = request.form.get('Type')
     ID = request.form.get('ID Number')
+    image = "EMPTY"
 
-    print(username, password, email, firstName, lastName, Org_School, acc_Type, ID)
-    return render_template('accountCreate.html')
+    print(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)  # debugger
+    SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
+    return render_template('accountCreate.html')    # rerender page
 
 # END OF ACCOUNT CREATION CODE
 
 
+SQL.check_db()
 if __name__ == '__main__':
     threading.Timer(1.25, open_browser).start()
     app.run(debug=True)
