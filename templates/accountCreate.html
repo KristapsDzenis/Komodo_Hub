@@ -23,14 +23,27 @@
         <a href="accountCreate.html">Sign Up</a>
     </div>
 
-    <!-- account creation form -->
-    <div id="container">
+    <!-- buttons to switch between forms -->
+    <div id="page_navigation">
+        <button onclick="select_personal()" class="account_btn">Create Personal Account</button>
+        <button onclick="select_org()" class="org_btn">Create Organisation Account</button>
+    </div>
 
-        <form action="/create_account" method="post"><!-- links to flask function with button click at the bottom of the form -->
+    <!-- message window -->
+    <div id="error">
+         {% if success %}
+             <p style="color: green;">{{ success }}</p>
+         {% endif %}
+    </div>
+
+    <!-- user account creation form -->
+    <div id="container_1">
+
+        <form action="/create_account" method="post" enctype="multipart/form-data"><!-- links to flask function with button click at the bottom of the form -->
 
             <fieldset id="profile_image">
-                <input type="file" id="imageUpload" name="image" accept="image/*"  onclick="Show_preview()"  >
-                <img id="preview" src="#" alt="">
+                <input type="file" id="imageUpload" name="image" accept="image/*"  onclick="Show_preview()" required >
+                <img id="preview" src="" alt="">
             </fieldset>
 
             <p class="message"> Fields with * required</p>
@@ -74,7 +87,6 @@
                 <datalist id="type">
 
                     <option value="Standard">
-                    <option value="Admin">
                     <option value="Teacher">
                     <option value="Student">
 
@@ -88,6 +100,48 @@
             </fieldset>
 
             <button type="submit" class="">Submit</button>
+
+        </form>
+
+    </div>
+
+    <!-- organisation account creation form -->
+    <div id="container_2">
+
+        <form action="/create_org" method="post" enctype="multipart/form-data"><!-- links to flask function with button click at the bottom of the form -->
+
+            <fieldset id="profile_image">
+                <input type="file" id="imageUpload_2" name="image" accept="image/*"  onclick="Show_preview_2()"  >
+                <img id="preview_2" src="#" alt="">
+            </fieldset>
+
+            <p class="message"> Fields with * required</p>
+
+            <fieldset id="form_1">
+                <br>
+                <label for="UName" class="align" >*Username</label>
+                <input  type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                        title="Can only enter letters and numbers" placeholder="Username" required>
+                <br>
+                <br>
+                <label for="PWord" class="align" >*Password</label>
+                <input  type="text" id="PWord" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                        title="Can only enter letters and numbers" placeholder="Password" required>
+                <br>
+            </fieldset>
+
+            <fieldset id="form_2">
+                <br>
+                <label for="pEmail" class="align" >*Email</label>
+                <input id="pEmail" size="30" type="email"  name="Email" placeholder="E-mail" required>
+                <br>
+                <br>
+                <label for="OrgName" class="align" >*Organisation/School Name</label>
+                <input  type="text" id="OrgName" maxlength="30" minlength="2" name="OrgName" pattern="[A-Za-z]{2,30}" size="30"
+                        title="Can only enter letters" placeholder="Organisation/School Name" required>
+            </fieldset>
+
+            <button class="" type="submit" >Submit</button>
 
         </form>
 
