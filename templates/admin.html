@@ -1,22 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../static/frame.css" rel="stylesheet" type="text/css">
+  <link href="../static/admin.css" rel="stylesheet" type="text/css">
+  
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
-    <title>Komodo Hub</title>
-
+  <title>Komodo Hub</title>
 </head>
-
 <body>
-
     <div class="topnav">
         <a href="#home">Komodo Hub</a>
         <h1>Hello, [PlaceholderUserName]</h1>
-        <a href="active">Sign Out</a>
+        <a href="#signout">Sign Out</a>
+    </div>
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <p><a href="#users" class="active">Users</a></p>
+            <p><a href="#organisations">Organisations</a></p>
+            <p><a href="#placeholder">Placeholder</a></p>
+        </div>
+    </div>
+    <div class="content">
+        <h2>User Grid</h2>
+        {% if dummy_data %}
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in dummy_data %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No users found.</p>
+        {% endif %}
     </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebarLinks = document.querySelectorAll('.sidebar-content a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                sidebarLinks.forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+    </script>
 </body>
-
 </html>
+
