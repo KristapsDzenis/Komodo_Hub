@@ -5,18 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
+    <link id="style" href="../static/dashboard.css" rel="stylesheet" type="text/css">
+    <script src="../static/JScode.js" type="text/javascript"></script>
     <title>Komodo Hub</title>
 
 </head>
 
 <body>
 
+    <!-- Top Navigation -->
     <div class="topnav">
-        <a href="#home">Komodo Hub</a>
-        <h1>Hello, [PlaceholderUserName]</h1>
+        <a href="#">Komodo Hub</a>
+        <h1 id="greeting">Hello, [PlaceholderUserName]</h1>
         <a href="active">Sign Out</a>
     </div>
 
-</body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
+            <li><a href="#" onclick="showSection('assignments')">Assignments</a></li>
+            <li><a href="#" onclick="showSection('messages')">Messages</a></li>
+            <li><a href="#" onclick="showSection('settings')">Settings</a></li>
+        </ul>
+    </div>
 
+    <!-- Main Content Area -->
+    <div class="content">
+        <div id="dashboard" class="section">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Here you can find updates, announcements, and quick links.</p>
+        </div>
+
+        <div id="assignments" class="section" style="display: none;">
+            <h2>Your Assignments</h2>
+            <p>View and submit your assignments here.</p>
+        </div>
+
+        <div id="messages" class="section" style="display: none;">
+            <h2>Messages</h2>
+            <p>Check messages from your teachers or classmates.</p>
+        </div>
+
+        <div id="settings" class="section" style="display: none;">
+            <h2>Settings</h2>
+            <p>Customize your profile and notification preferences.</p>
+        </div>
+    </div>
+
+</body>
 </html>
