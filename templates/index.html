@@ -13,9 +13,23 @@
 
     <div class="topnav">
         <a href="#home">Komodo Hub</a>
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
-        <a href="active">Sign In</a>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <label for="UName" class="" ></label>
+            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+             placeholder="Username">
+            <label for="Pword" class="" ></label>
+            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+            placeholder="Password">
+
+            <input type="hidden" name="source_page" value="index.html">
+
+            <button type="submit">Sign In</button>
+        </form>
+
         <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
     </div>
 
