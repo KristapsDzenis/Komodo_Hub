@@ -12,6 +12,16 @@
             padding: 0;
         }
 
+        #org_image
+        {
+            top: 50px;
+            left: 50px;
+            width: 300px;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
         .topnav {
             background-color: #333;
             overflow: hidden;
@@ -39,9 +49,13 @@
         }
 
         .chat-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 50px;
+            position: absolute;
+            display: block;
+            width: 1500px;
+            height: auto;
+            left: 400px;
+            top: 100px;
+
         }
 
         .chat-box {
@@ -134,6 +148,14 @@
         <a href="#home">Komodo Hub</a>
         <h1>Hello, [PlaceholderUserName]</h1>
         <a href="active">Sign Out</a>
+    </div>
+
+    <div id="org_image">
+
+    </div>
+
+    <div id="org_name">
+
     </div>
 
     <!-- Chat Box Container -->
