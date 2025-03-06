@@ -1,8 +1,9 @@
 # Python Flask file
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import webbrowser
 import threading
 import SQL
+import sqlite3
 import base64
 
 app = Flask(__name__)
@@ -17,7 +18,45 @@ def open_browser():
 def index():
     return render_template('index.html')
 
-# ACCOUNT CREATION CODE (Kristaps Dzenis)
+# ACCOUNT CREATION AND LOGIN CODE (Kristaps Dzenis)
+
+# function to process user login details and direct to correct page
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('Username')
+    password = request.form.get('Password')
+    source_page = request.form.get('source_page')
+    print(username, password, source_page)          # debugger
+
+    # retrieve user password and account type from db based on username
+    connect_db = sqlite3.connect('database.db')  # connect to database
+    cursor = connect_db.cursor()
+    data = SQL.fetch_user_details(username, cursor)     # check user_details for details
+    if not data:
+        data = SQL.fetch_org_details(username, cursor)      # check user_details for details
+        if not data:
+            # if username not found throw error
+            if source_page == "index.html":
+                return render_template('index.html', error="Invalid username or password")
+            if source_page == "accountCreate.html":
+                return render_template('accountCreate.html', error="Invalid username or password")
+    print(data)         # debugger
+    connect_db.close()  # close database
+
+    # check password and if password correct direct to correct page based on account type
+    if password == data[0][0]:
+        if data[0][1] == "Standard" or data[0][1] == "Teacher" or data[0][1] == "Student":
+            # not added yet because Flask function does not exist yet
+            # return redirect(url_for('name of user account page function', username=username))
+            pass
+        if data[0][1] == "Admin":
+            return redirect(url_for('render_admin_panel', username=username))
+    # if password incorrect throw error
+    else:
+        if source_page == "index.html":
+            return render_template('index.html', error="Invalid username or password")
+        if source_page == "accountCreate.html":
+            return render_template('accountCreate.html', error="Invalid username or password")
 
 # renders account creation page
 @app.route('/accountCreate.html')
@@ -63,9 +102,10 @@ def create_org():
 
 # ADMIN PANEL CODE (Milo Byrnes)
 
+# changed by including username variable passed from login function
 # renders admin panel page with dummy data
-@app.route('/admin.html')
-def render_admin_panel():
+@app.route('/admin/<username>')
+def render_admin_panel(username):           #
     dummy_data = [
         {'id': 1, 'username': 'alice', 'email': 'alice@example.com'},
         {'id': 2, 'username': 'bob', 'email': 'bob@example.com'},
@@ -73,7 +113,7 @@ def render_admin_panel():
         {'id': 4, 'username': 'david', 'email': 'david@example.com'},
         {'id': 5, 'username': 'eve', 'email': 'eve@example.com'}
     ]
-    return render_template('admin.html', dummy_data=dummy_data)
+    return render_template('admin.html', dummy_data=dummy_data, username=username)
 
 # END OF ADMIN PANEL CODE
 
