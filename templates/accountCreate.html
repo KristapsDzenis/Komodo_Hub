@@ -17,9 +17,23 @@
     <!-- top navigation bar -->
     <div class="topnav">
         <a href="">Komodo Hub</a>
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
-        <a href="active">Sign In</a>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <label for="UName" class="" ></label>
+            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+             placeholder="Username">
+            <label for="Pword" class="" ></label>
+            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+            placeholder="Password">
+
+            <input type="hidden" name="source_page" value="accountCreate.html">
+
+            <button type="submit">Sign In</button>
+        </form>
+
         <a href="accountCreate.html">Sign Up</a>
     </div>
 
@@ -99,7 +113,7 @@
                         title="Can only enter letters and numbers" placeholder="ID Number">
             </fieldset>
 
-            <button type="submit" class="">Submit</button>
+            <button type="submit" class="create_btn">Submit</button>
 
         </form>
 
@@ -141,7 +155,7 @@
                         title="Can only enter letters" placeholder="Organisation/School Name" required>
             </fieldset>
 
-            <button class="" type="submit" >Submit</button>
+            <button type="submit" class="create_btn">Submit</button>
 
         </form>
 

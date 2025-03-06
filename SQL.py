@@ -71,3 +71,18 @@ def insert_org(username, password, email, Org_School, acc_Type, image) :
 
     connect_db.commit()  # commit changes to database
     connect_db.close()  # close database
+
+# function to retrieve user password and account type from user_details table
+def fetch_user_details(username, cursor):
+
+    cursor.execute("SELECT password, account_type FROM user_details WHERE username =?", (username,))
+
+    return cursor.fetchall()
+
+# function to retrieve user password and account type from org_details table
+def fetch_org_details(username, cursor):
+
+    cursor.execute("SELECT password, account_type FROM org_details WHERE username =?", (username,))
+
+    return cursor.fetchall()
+
