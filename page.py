@@ -114,11 +114,6 @@ def render_admin_panel(username):           #
 
 # END OF ADMIN PANEL CODE
 
-SQL.check_db()
-if __name__ == '__main__':
-    threading.Timer(1.25, open_browser).start()
-    app.run(debug=True)
-
 # ACCOUNT DETAILS CODE (Prince Kalu)
 
 @app.route('/account/<username>')
@@ -156,3 +151,11 @@ def account(username):
         return redirect(url_for('index'))
 
 # END OF ACCOUNT DETAILS CODE
+
+
+SQL.check_db()
+if __name__ == '__main__':
+    threading.Timer(1.25, open_browser).start()
+    app.run(debug=True)
+
+
