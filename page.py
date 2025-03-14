@@ -33,7 +33,7 @@ def login():
     cursor = connect_db.cursor()
     data = SQL.fetch_user_details(username, cursor)     # check user_details for details
     if not data:
-        data = SQL.fetch_org_details(username, cursor)      # check user_details for details
+        data = SQL.fetch_org_details(username, cursor)      # check org_details for details
         if not data:
             # if username not found throw error
             if source_page == "index.html":
@@ -45,10 +45,8 @@ def login():
 
     # check password and if password correct direct to correct page based on account type
     if password == data[0][0]:
-        if data[0][1] == "Standard" or data[0][1] == "Teacher" or data[0][1] == "Student":
-            # not added yet because Flask function does not exist yet
-            # return redirect(url_for('name of user account page function', username=username))
-            pass
+        if data[0][1] in ["Standard", "Teacher", "Student"]:
+            return redirect(url_for('account', username=username))
         if data[0][1] == "Admin":
             return redirect(url_for('render_admin_panel', username=username))
     # if password incorrect throw error
@@ -82,7 +80,6 @@ def create_account():
     SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
     return render_template('accountCreate.html', success="Congratulations! Account created successfully") # rerender page
 
-# stores data from html form into SQLite database
 @app.route('/create_org', methods=['POST'])
 def create_org():
     username = request.form.get('Username')
@@ -262,3 +259,41 @@ SQL.check_db()
 if __name__ == '__main__':
     threading.Timer(1.25, open_browser).start()
     app.run(debug=True)
+
+# ACCOUNT DETAILS CODE (Prince Kalu)
+
+@app.route('/account/<username>')
+def account(username):
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+
+    # Fetch user info
+    cursor.execute("SELECT fname, sname, e_mail, account_type FROM user_details WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    # Fetch posts
+    posts = SQL.fetch_posts(cursor)
+    processed_posts = []
+    for post in posts:
+        encoded_image = None
+        if post[2]:
+            encoded_image = base64.b64encode(post[2]).decode('utf-8')
+        processed_posts.append({
+            'author': post[0],
+            'content': post[1],
+            'image': encoded_image
+        })
+
+    connect_db.close()
+
+    if user:
+        user_data = {
+            'name': f"{user[0]} {user[1]}",
+            'email': user[2],
+            'role': user[3]
+        }
+        return render_template('account.html', username=username, user=user_data, posts=processed_posts)
+    else:
+        return redirect(url_for('index'))
+
+# END OF ACCOUNT DETAILS CODE
