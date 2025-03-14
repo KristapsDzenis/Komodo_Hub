@@ -17,7 +17,7 @@
     <div class="topnav">
         <a href="#">Komodo Hub</a>
         <h1 id="greeting">Hello, {{ username }}</h1> <!-- Dynamic username from Flask -->
-        <a href="active">Sign Out</a>
+        <a href="/logout">Sign Out</a>
     </div>
 
     <!-- Sidebar Navigation -->
@@ -26,14 +26,15 @@
             <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
             <li><a href="#" onclick="showSection('posts')">Posts</a></li>
             <li><a href="#" onclick="showSection('messages')">Messages</a></li>
-            <li><a href="homepage.html">Homepage</a></li> <!-- Future navigation -->
-            <li><a href="organisation.html">Organisation</a></li> <!-- Future navigation -->
+            <li><a href="homepage.html">Homepage</a></li>
+            <li><a href="organisation.html">Organisation</a></li>
         </ul>
     </div>
 
     <!-- Main Content Area -->
     <div class="content">
-        <!-- Dashboard Section: Displays User Info from Flask DB -->
+
+        <!-- Dashboard Section -->
         <div id="dashboard" class="section">
             <h2>Your Profile</h2>
             <p>Name: {{ user.name }}</p>
@@ -44,14 +45,30 @@
         <!-- Posts Section -->
         <div id="posts" class="section" style="display: none;">
             <h2>Posts</h2>
-            <form action="/submit_post" method="POST">
-                <textarea name="post_content" placeholder="Write your post here..."></textarea>
+            
+            <!-- Form for posting text and image -->
+            <form action="/submit_post" method="POST" enctype="multipart/form-data">
+                <textarea name="post_content" placeholder="Write your post here..." required></textarea>
+                <input type="hidden" name="username" value="{{ username }}">
+                
+                <!-- New File Upload for Images -->
+                <input type="file" name="image" accept="image/*">
+
                 <button type="submit">Submit</button>
             </form>
+
             <h3>Recent Posts</h3>
             <ul>
                 {% for post in posts %}
-                    <li>{{ post.content }} - <i>{{ post.author }}</i></li>
+                    <li>
+                        {{ post.content }} - <i>{{ post.author }}</i>
+                        {% if post.image %}
+                            <br>
+                            <!-- Display Uploaded Image -->
+                            <img src="data:image/jpeg;base64,{{ post.image }}" alt="Uploaded Image" 
+                                 style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         </div>
@@ -61,6 +78,7 @@
             <h2>Messages</h2>
             <p>Check messages from your teachers or classmates.</p>
         </div>
+        
     </div>
 
 </body>

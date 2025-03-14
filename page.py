@@ -121,3 +121,43 @@ SQL.check_db()
 if __name__ == '__main__':
     threading.Timer(1.25, open_browser).start()
     app.run(debug=True)
+
+
+# ACCOUNT DETAILS CODE (Prince Kalu)
+
+@app.route('/account/<username>')
+def account(username):
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+
+    # Fetch user info
+    cursor.execute("SELECT fname, sname, e_mail, account_type FROM user_details WHERE username = ?", (username,))
+    user = cursor.fetchone()
+
+    # Fetch posts
+    posts = SQL.fetch_posts(cursor)
+    processed_posts = []
+    for post in posts:
+        encoded_image = None
+        if post[2]:
+            encoded_image = base64.b64encode(post[2]).decode('utf-8')
+        processed_posts.append({
+            'author': post[0],
+            'content': post[1],
+            'image': encoded_image
+        })
+
+    connect_db.close()
+
+    if user:
+        user_data = {
+            'name': f"{user[0]} {user[1]}",
+            'email': user[2],
+            'role': user[3]
+        }
+        return render_template('account.html', username=username, user=user_data, posts=processed_posts)
+    else:
+        return redirect(url_for('index'))
+
+# END OF ACCOUNT DETAILS CODE
+

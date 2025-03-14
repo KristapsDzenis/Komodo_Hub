@@ -86,3 +86,27 @@ def fetch_org_details(username, cursor):
 
     return cursor.fetchall()
 
+# Add this to check_db() in SQL.py
+cursor.execute("""CREATE TABLE IF NOT EXISTS user_posts(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    content TEXT,
+    image BLOB,
+    FOREIGN KEY (username) REFERENCES user_details(username)
+);""")
+
+# Insert new post (text + image)
+def insert_post(username, content, image):
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+
+    cursor.execute("INSERT INTO user_posts (username, content, image) VALUES (?, ?, ?)", 
+                   (username, content, image))
+    
+    connect_db.commit()
+    connect_db.close()
+
+# Fetch posts (including images)
+def fetch_posts(cursor):
+    cursor.execute("SELECT username, content, image FROM user_posts ORDER BY id DESC")
+    return cursor.fetchall()
