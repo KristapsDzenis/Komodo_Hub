@@ -16,7 +16,7 @@
     <!-- Top Navigation -->
     <div class="topnav">
         <a href="#">Komodo Hub</a>
-        <h1 id="greeting">Hello, {{ username }}</h1> <!-- Dynamic username from Flask -->
+        <h1 id="greeting">Hello, {{ username }}</h1>
         <a href="/logout">Sign Out</a>
     </div>
 
@@ -43,12 +43,11 @@
         </div>
 
         <!-- Posts Section -->
-        <div id="posts" class="section">
+        <div id="posts" class="section" style="display: none;">
             <h2>Posts</h2>
             
             <!-- Form for posting text and image -->
             <form action="/submit_post" method="POST" enctype="multipart/form-data">
-                <!-- Add Label, Placeholder, and Title -->
                 <label for="post_content">Write your post:</label>
                 <textarea id="post_content" name="post_content" 
                           placeholder="Write your post here..." 
@@ -57,7 +56,6 @@
 
                 <input type="hidden" name="username" value="{{ username }}">
                 
-                <!-- File Upload with Label and Title -->
                 <label for="image">Attach an image:</label>
                 <input id="image" type="file" name="image" accept="image/*" 
                        title="Upload an image">
@@ -72,7 +70,6 @@
                         {{ post.content }} - <i>{{ post.author }}</i>
                         {% if post.image %}
                             <br>
-                            <!-- Display Uploaded Image -->
                             <img src="data:image/jpeg;base64,{{ post.image }}" 
                                  alt="Image uploaded by {{ post.author }}" 
                                  class="post-image">
@@ -83,12 +80,12 @@
         </div>
 
         <!-- Messages Section -->
-        <div id="messages" class="section">
+        <div id="messages" class="section" style="display: none;">
             <h2>Messages</h2>
             <p>Check messages from your teachers or classmates.</p>
         </div>
         
     </div>
-
+    
 </body>
 </html>

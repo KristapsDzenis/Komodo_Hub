@@ -10,17 +10,19 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #2e8b57;
+    background-color: #2e8b57; /* Green base color */
     padding: 0 20px;
     height: 60px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* ✅ User Greeting */
 .topnav h1 {
     color: #ffffff;
     font-size: 1.3rem;
 }
 
+/* ✅ Logout Button */
 .topnav a {
     color: #ffffff;
     text-decoration: none;
@@ -31,142 +33,17 @@ html, body {
 }
 
 .topnav a:hover {
-    background-color: #3cb371;
+    background-color: #3cb371; /* Lighter green */
+}
+
+.topnav a.active {
+    background-color: #006400; /* Darker green */
 }
 
 /* ✅ Sidebar */
 .sidebar {
     position: fixed;
-    top: 60px;
+    top: 60px; /* Align with topnav */
     left: 0;
     width: 200px;
-    height: calc(100% - 60px);
-    background-color: #808080;
-    padding-top: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    margin-bottom: 5px;
-}
-
-.sidebar ul li a {
-    display: block;
-    padding: 10px;
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.sidebar ul li a:hover,
-.sidebar ul li a.active {
-    background-color: #33add5;
-}
-
-/* ✅ Main Content Area */
-.content {
-    margin-top: 20px;
-    margin-left: 220px;
-    padding: 20px;
-}
-
-/* ✅ Section Headers */
-.section h2 {
-    color: #2e8b57;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #3cb371;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
-}
-
-/* ✅ Post Form Styles */
-form {
-    margin-bottom: 20px;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    resize: none;
-    font-size: 1rem;
-    box-sizing: border-box;
-}
-
-input[type="file"] {
-    margin-top: 10px;
-    display: block;
-    font-size: 1rem;
-}
-
-button {
-    background-color: #2e8b57;
-    color: #ffffff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #3cb371;
-}
-
-/* ✅ Post List Styles */
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    background-color: #f9f9f9;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-/* ✅ Uploaded Image Styles */
-img {
-    max-width: 100%; 
-    height: auto;
-    border-radius: 8px;
-    margin-top: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* ✅ Responsive Design */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    .content {
-        margin-left: 0;
-        padding: 10px;
-    }
-
-    .topnav {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-    }
-
-    .sidebar ul li a {
-        text-align: center;
-        padding: 12px;
-    }
-}
+    height:

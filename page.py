@@ -33,7 +33,7 @@ def login():
     cursor = connect_db.cursor()
     data = SQL.fetch_user_details(username, cursor)     # check user_details for details
     if not data:
-        data = SQL.fetch_org_details(username, cursor)      # check user_details for details
+        data = SQL.fetch_org_details(username, cursor)      # check org_details for details
         if not data:
             # if username not found throw error
             if source_page == "index.html":
@@ -45,10 +45,8 @@ def login():
 
     # check password and if password correct direct to correct page based on account type
     if password == data[0][0]:
-        if data[0][1] == "Standard" or data[0][1] == "Teacher" or data[0][1] == "Student":
-            # not added yet because Flask function does not exist yet
-            # return redirect(url_for('name of user account page function', username=username))
-            pass
+        if data[0][1] in ["Standard", "Teacher", "Student"]:
+            return redirect(url_for('account', username=username))
         if data[0][1] == "Admin":
             return redirect(url_for('render_admin_panel', username=username))
     # if password incorrect throw error
@@ -79,85 +77,4 @@ def create_account():
     image = image.read()
 
     print(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)  # debugger
-    SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
-    return render_template('accountCreate.html', success="Congratulations! Account created successfully") # rerender page
-
-# stores data from html form into SQLite database
-@app.route('/create_org', methods=['POST'])
-def create_org():
-    username = request.form.get('Username')
-    password = request.form.get('Password')
-    email = request.form.get('Email')
-    Org_School = request.form.get('OrgName')
-    acc_Type = "Admin"
-    # stores image in variable and converts to binary
-    image = request.files['image']
-    image = image.read()
-
-    print(username, password, email, Org_School, acc_Type, image)  # debugger
-    SQL.insert_org(username, password, email, Org_School, acc_Type, image)    # run sql query
-    return render_template('accountCreate.html', success="Congratulations! Account created successfully")    # rerender page
-
-# END OF ACCOUNT CREATION CODE
-
-# ADMIN PANEL CODE (Milo Byrnes)
-
-# changed by including username variable passed from login function
-# renders admin panel page with dummy data
-@app.route('/admin/<username>')
-def render_admin_panel(username):           #
-    dummy_data = [
-        {'id': 1, 'username': 'alice', 'email': 'alice@example.com'},
-        {'id': 2, 'username': 'bob', 'email': 'bob@example.com'},
-        {'id': 3, 'username': 'charlie', 'email': 'charlie@example.com'},
-        {'id': 4, 'username': 'david', 'email': 'david@example.com'},
-        {'id': 5, 'username': 'eve', 'email': 'eve@example.com'}
-    ]
-    return render_template('admin.html', dummy_data=dummy_data, username=username)
-
-# END OF ADMIN PANEL CODE
-
-SQL.check_db()
-if __name__ == '__main__':
-    threading.Timer(1.25, open_browser).start()
-    app.run(debug=True)
-
-
-# ACCOUNT DETAILS CODE (Prince Kalu)
-
-@app.route('/account/<username>')
-def account(username):
-    connect_db = sqlite3.connect('database.db')
-    cursor = connect_db.cursor()
-
-    # Fetch user info
-    cursor.execute("SELECT fname, sname, e_mail, account_type FROM user_details WHERE username = ?", (username,))
-    user = cursor.fetchone()
-
-    # Fetch posts
-    posts = SQL.fetch_posts(cursor)
-    processed_posts = []
-    for post in posts:
-        encoded_image = None
-        if post[2]:
-            encoded_image = base64.b64encode(post[2]).decode('utf-8')
-        processed_posts.append({
-            'author': post[0],
-            'content': post[1],
-            'image': encoded_image
-        })
-
-    connect_db.close()
-
-    if user:
-        user_data = {
-            'name': f"{user[0]} {user[1]}",
-            'email': user[2],
-            'role': user[3]
-        }
-        return render_template('account.html', username=username, user=user_data, posts=processed_posts)
-    else:
-        return redirect(url_for('index'))
-
-# END OF ACCOUNT DETAILS CODE
-
+    SQL.insert_user(username, password, email, firstName, lastNa
