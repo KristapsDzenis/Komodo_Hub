@@ -35,7 +35,7 @@
     <div class="content">
 
         <!-- Dashboard Section -->
-        <div id="dashboard" class="section">
+        <div id="dashboard" class="section active">
             <h2>Your Profile</h2>
             <p>Name: {{ user.name }}</p>
             <p>Email: {{ user.email }}</p>
@@ -43,16 +43,24 @@
         </div>
 
         <!-- Posts Section -->
-        <div id="posts" class="section" style="display: none;">
+        <div id="posts" class="section">
             <h2>Posts</h2>
             
             <!-- Form for posting text and image -->
             <form action="/submit_post" method="POST" enctype="multipart/form-data">
-                <textarea name="post_content" placeholder="Write your post here..." required></textarea>
+                <!-- Add Label, Placeholder, and Title -->
+                <label for="post_content">Write your post:</label>
+                <textarea id="post_content" name="post_content" 
+                          placeholder="Write your post here..." 
+                          title="Write your post here..." 
+                          required></textarea>
+
                 <input type="hidden" name="username" value="{{ username }}">
                 
-                <!-- New File Upload for Images -->
-                <input type="file" name="image" accept="image/*">
+                <!-- File Upload with Label and Title -->
+                <label for="image">Attach an image:</label>
+                <input id="image" type="file" name="image" accept="image/*" 
+                       title="Upload an image">
 
                 <button type="submit">Submit</button>
             </form>
@@ -65,8 +73,9 @@
                         {% if post.image %}
                             <br>
                             <!-- Display Uploaded Image -->
-                            <img src="data:image/jpeg;base64,{{ post.image }}" alt="Uploaded Image" 
-                                 style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                            <img src="data:image/jpeg;base64,{{ post.image }}" 
+                                 alt="Image uploaded by {{ post.author }}" 
+                                 class="post-image">
                         {% endif %}
                     </li>
                 {% endfor %}
@@ -74,7 +83,7 @@
         </div>
 
         <!-- Messages Section -->
-        <div id="messages" class="section" style="display: none;">
+        <div id="messages" class="section">
             <h2>Messages</h2>
             <p>Check messages from your teachers or classmates.</p>
         </div>
