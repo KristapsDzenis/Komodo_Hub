@@ -1,0 +1,69 @@
+/* General Reset */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Top Navigation Bar */
+.topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #2e8b57; /* Green base color */
+    padding: 0 20px;
+    height: 60px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo Box */
+.topnav a:first-child {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-decoration: none;
+    margin-right: auto;
+}
+
+/* Navigation Links */
+.topnav a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+h1
+{
+    color: #ffffff;
+    font-size: 1.3rem;
+}
+
+/* Input Fields */
+.topnav input[type="text"], .topnav input[type="password"] {
+    padding: 8px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Buttons */
+.topnav a:hover {
+    background-color: #3cb371; /* Lighter green */
+}
+
+.topnav input:hover
+{
+    background-color: #e2e2e2;
+}
+
+.topnav a.active {
+    background-color: #006400; /* Darker green for active links */
+}
+
+/* Adjust Spacing for Right-Aligned Elements */
+.topnav a:not(:first-child), .topnav input {
+    margin-left: 15px;
+}

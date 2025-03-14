@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
+    <title>Komodo Hub</title>
+
+</head>
+
+<body>
+
+    <div class="topnav">
+        <a href="#home">Komodo Hub</a>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <label for="UName" class="" ></label>
+            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+             placeholder="Username">
+            <label for="Pword" class="" ></label>
+            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+            placeholder="Password">
+
+            <input type="hidden" name="source_page" value="index.html">
+
+            <button type="submit">Sign In</button>
+        </form>
+
+        <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
+    </div>
+
+</body>
+
+</html>
