@@ -159,9 +159,7 @@ def render_admin_panel(username):
                          admin_username=username,
                          active_section=active_section)
 
-# END OF ADMIN PANEL CODE
 
-# ADMIN PANEL OPERATIONS
 @app.route('/admin/delete_user/<username>', methods=['POST'])
 def delete_user(username):
     try:
@@ -258,7 +256,7 @@ def edit_organization(username):
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# END OF ADMIN PANEL OPERATIONS
+# END OF ADMIN PANEL CODE
 
 SQL.check_db()
 if __name__ == '__main__':
