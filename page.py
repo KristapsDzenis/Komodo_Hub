@@ -1,5 +1,5 @@
 # Python Flask file
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import webbrowser
 import threading
 import SQL
@@ -102,15 +102,156 @@ def create_org():
 # changed by including username variable passed from login function
 # renders admin panel page with dummy data
 @app.route('/admin/<username>')
-def render_admin_panel(username):           #
-    dummy_data = [
-        {'id': 1, 'username': 'alice', 'email': 'alice@example.com'},
-        {'id': 2, 'username': 'bob', 'email': 'bob@example.com'},
-        {'id': 3, 'username': 'charlie', 'email': 'charlie@example.com'},
-        {'id': 4, 'username': 'david', 'email': 'david@example.com'},
-        {'id': 5, 'username': 'eve', 'email': 'eve@example.com'}
+def render_admin_panel(username):
+    # Get the active section from query parameter, default to 'users-section'
+    active_section = request.args.get('section', 'users-section')
+    
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+    
+    # Fetch regular users with all details
+    cursor.execute("""
+        SELECT username, password, e_mail, fname, sname, org_school_name, account_type, id 
+        FROM user_details
+        WHERE account_type != 'Admin'
+        ORDER BY username
+    """)
+    
+    users = [
+        {
+            'username': row[0],
+            'password': row[1],
+            'email': row[2],
+            'fname': row[3],
+            'sname': row[4],
+            'organization': row[5],
+            'account_type': row[6],
+            'id': row[7]
+        }
+        for row in cursor.fetchall()
     ]
-    return render_template('admin.html', dummy_data=dummy_data, username=username)
+    
+    # Fetch all organizations
+    cursor.execute("""
+        SELECT username, password, org_school_name, e_mail, account_type 
+        FROM org_details
+        ORDER BY username
+    """)
+    
+    organizations = [
+        {
+            'username': row[0],
+            'password': row[1],
+            'org_school_name': row[2],
+            'email': row[3],
+            'account_type': row[4]
+        }
+        for row in cursor.fetchall()
+    ]
+    
+    connect_db.close()
+    return render_template('admin.html', 
+                         users=users, 
+                         organizations=organizations, 
+                         admin_username=username,
+                         active_section=active_section)
+
+
+@app.route('/admin/delete_user/<username>', methods=['POST'])
+def delete_user(username):
+    try:
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Delete the user from the database
+        cursor.execute("DELETE FROM user_details WHERE username = ?", (username,))
+        connect_db.commit()
+        connect_db.close()
+        
+        # Get the admin username from the referrer URL
+        admin_username = request.referrer.split('/admin/')[1].split('?')[0]
+        # Get the current section from the referrer
+        current_url = request.referrer
+        section = 'users-section'  # default
+        if '?section=' in current_url:
+            section = current_url.split('?section=')[1]
+        
+        return redirect(url_for('render_admin_panel', username=admin_username, section=section))
+    except Exception as e:
+        return f"Error deleting user: {str(e)}", 500
+
+@app.route('/admin/delete_organization/<username>', methods=['POST'])
+def delete_organization(username):
+    try:
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Delete the organization from the database
+        cursor.execute("DELETE FROM org_details WHERE username = ?", (username,))
+        connect_db.commit()
+        connect_db.close()
+        
+        # Get the admin username from the referrer URL
+        admin_username = request.referrer.split('/admin/')[1].split('?')[0]
+        # Get the current section from the referrer
+        current_url = request.referrer
+        section = 'organizations-section'  # default to organizations for org deletion
+        if '?section=' in current_url:
+            section = current_url.split('?section=')[1]
+        
+        return redirect(url_for('render_admin_panel', username=admin_username, section=section))
+    except Exception as e:
+        return f"Error deleting organization: {str(e)}", 500
+
+@app.route('/admin/edit_user/<username>', methods=['POST'])
+def edit_user(username):
+    try:
+        data = request.get_json()
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Update user details
+        cursor.execute("""
+            UPDATE user_details 
+            SET e_mail = ?, fname = ?, sname = ?, org_school_name = ?, 
+                account_type = ?, id = ?
+            WHERE username = ?
+        """, (
+            data['email'], data['fname'], data['sname'], 
+            data['organization'], data['account_type'], 
+            data['id'], username
+        ))
+        
+        connect_db.commit()
+        connect_db.close()
+        
+        return jsonify({'success': True, 'message': f'User {username} updated successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/admin/edit_organization/<username>', methods=['POST'])
+def edit_organization(username):
+    try:
+        data = request.get_json()
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Update organization details
+        cursor.execute("""
+            UPDATE org_details 
+            SET e_mail = ?, org_school_name = ?, account_type = ?
+            WHERE username = ?
+        """, (
+            data['email'], data['org_school_name'], 
+            data['account_type'], username
+        ))
+        
+        connect_db.commit()
+        connect_db.close()
+        
+        return jsonify({'success': True, 'message': f'Organization {username} updated successfully'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 # END OF ADMIN PANEL CODE
 
