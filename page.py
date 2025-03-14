@@ -77,4 +77,44 @@ def create_account():
     image = image.read()
 
     print(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)  # debugger
-    SQL.insert_user(username, password, email, firstName, lastNa
+    SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
+    return render_template('accountCreate.html', success="Congratulations! Account created successfully") # rerender page
+
+@app.route('/create_org', methods=['POST'])
+def create_org():
+    username = request.form.get('Username')
+    password = request.form.get('Password')
+    email = request.form.get('Email')
+    Org_School = request.form.get('OrgName')
+    acc_Type = "Admin"
+    # stores image in variable and converts to binary
+    image = request.files['image']
+    image = image.read()
+
+    print(username, password, email, Org_School, acc_Type, image)  # debugger
+    SQL.insert_org(username, password, email, Org_School, acc_Type, image)    # run sql query
+    return render_template('accountCreate.html', success="Congratulations! Account created successfully")    # rerender page
+
+# END OF ACCOUNT CREATION CODE
+
+# ADMIN PANEL CODE (Milo Byrnes)
+
+# changed by including username variable passed from login function
+# renders admin panel page with dummy data
+@app.route('/admin/<username>')
+def render_admin_panel(username):           #
+    dummy_data = [
+        {'id': 1, 'username': 'alice', 'email': 'alice@example.com'},
+        {'id': 2, 'username': 'bob', 'email': 'bob@example.com'},
+        {'id': 3, 'username': 'charlie', 'email': 'charlie@example.com'},
+        {'id': 4, 'username': 'david', 'email': 'david@example.com'},
+        {'id': 5, 'username': 'eve', 'email': 'eve@example.com'}
+    ]
+    return render_template('admin.html', dummy_data=dummy_data, username=username)
+
+# END OF ADMIN PANEL CODE
+
+SQL.check_db()
+if __name__ == '__main__':
+    threading.Timer(1.25, open_browser).start()
+    app.run(debug=True)
