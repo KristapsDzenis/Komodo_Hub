@@ -1,22 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
-    <title>Komodo Hub</title>
-
+    <title>Komodo Hub - Admin Panel</title>
+    <!-- Stylesheets -->
+    <link href="../static/frame.css" rel="stylesheet" type="text/css">
+    <link href="../static/admin.css" rel="stylesheet" type="text/css">
 </head>
-
 <body>
+    <!-- Navigation -->
+    <header>
+        <div class="topnav">
+            <a href="#home">Komodo Hub</a>
+            <h1>Welcome, {{ admin_username }}</h1>
+            <a href="/">Sign Out</a>
+        </div>
+    </header>
 
-    <div class="topnav">
-        <a href="#home">Komodo Hub</a>
-        <h1>Hello, [PlaceholderUserName]</h1>
-        <a href="active">Sign Out</a>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-content">
+            <p><a href="#" onclick="showSection('users-section')" {% if active_section == 'users-section' %}class="active"{% endif %} id="users-link">Users</a></p>
+            <p><a href="#" onclick="showSection('organizations-section')" {% if active_section == 'organizations-section' %}class="active"{% endif %} id="organizations-link">Organisations</a></p>
+            <p><a href="#" onclick="showSection('placeholder-section')" {% if active_section == 'placeholder-section' %}class="active"{% endif %} id="placeholder-link">Placeholder</a></p>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+        <!-- Users Section -->
+        <section id="users-section" class="section" {% if active_section != 'users-section' %}style="display: none;"{% endif %}>
+            <h2>User Management</h2>
+            {% if users %}
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="column-0">Username <button class="column-toggle" onclick="toggleColumn('users', 0)">Toggle</button></th>
+                            <th class="column-1">First Name <button class="column-toggle" onclick="toggleColumn('users', 1)">Toggle</button></th>
+                            <th class="column-2">Last Name <button class="column-toggle" onclick="toggleColumn('users', 2)">Toggle</button></th>
+                            <th class="column-3">Email <button class="column-toggle" onclick="toggleColumn('users', 3)">Toggle</button></th>
+                            <th class="column-4">Account Type <button class="column-toggle" onclick="toggleColumn('users', 4)">Toggle</button></th>
+                            <th class="column-5">Organization <button class="column-toggle" onclick="toggleColumn('users', 5)">Toggle</button></th>
+                            <th class="column-6">ID Number <button class="column-toggle" onclick="toggleColumn('users', 6)">Toggle</button></th>
+                            <th>Actions <button class="btn-reset" onclick="resetColumns('users')">Reset View</button></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td class="column-0">{{ user.username }}</td>
+                            <td class="column-1">{{ user.fname }}</td>
+                            <td class="column-2">{{ user.sname }}</td>
+                            <td class="column-3">{{ user.email }}</td>
+                            <td class="column-4">{{ user.account_type }}</td>
+                            <td class="column-5">{{ user.organization }}</td>
+                            <td class="column-6">{{ user.id }}</td>
+                            <td>
+                                <button type="button" class="btn-edit" onclick='openModal("editUserModal", {
+                                    username: "{{ user.username }}",
+                                    fname: "{{ user.fname }}",
+                                    sname: "{{ user.sname }}",
+                                    email: "{{ user.email }}",
+                                    organization: "{{ user.organization }}",
+                                    account_type: "{{ user.account_type }}",
+                                    id: "{{ user.id }}"
+                                })'>Edit</button>
+                                <form action="{{ url_for('delete_user', username=user.username) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete user: {{ user.username }}?');">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No users found in the system.</p>
+            {% endif %}
+        </section>
+
+        <!-- Organizations Section -->
+        <section id="organizations-section" class="section" {% if active_section != 'organizations-section' %}style="display: none;"{% endif %}>
+            <h2>Organization Management</h2>
+            {% if organizations %}
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="column-0">Username <button class="column-toggle" onclick="toggleColumn('orgs', 0)">Toggle</button></th>
+                            <th class="column-1">Password <button class="column-toggle" onclick="toggleColumn('orgs', 1)">Toggle</button></th>
+                            <th class="column-2">Organization Name <button class="column-toggle" onclick="toggleColumn('orgs', 2)">Toggle</button></th>
+                            <th class="column-3">Email <button class="column-toggle" onclick="toggleColumn('orgs', 3)">Toggle</button></th>
+                            <th class="column-4">Account Type <button class="column-toggle" onclick="toggleColumn('orgs', 4)">Toggle</button></th>
+                            <th>Actions <button class="btn-reset" onclick="resetColumns('orgs')">Reset View</button></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for org in organizations %}
+                        <tr>
+                            <td class="column-0">{{ org.username }}</td>
+                            <td class="column-1">{{ org.password }}</td>
+                            <td class="column-2">{{ org.org_school_name }}</td>
+                            <td class="column-3">{{ org.email }}</td>
+                            <td class="column-4">{{ org.account_type }}</td>
+                            <td>
+                                <button type="button" class="btn-edit" onclick='openModal("editOrgModal", {
+                                    username: "{{ org.username }}",
+                                    org_school_name: "{{ org.org_school_name }}",
+                                    email: "{{ org.email }}",
+                                    account_type: "{{ org.account_type }}"
+                                })'>Edit</button>
+                                <form action="{{ url_for('delete_organization', username=org.username) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete organization: {{ org.username }}?');">
+                                    <button type="submit" class="btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No organizations found in the system.</p>
+            {% endif %}
+        </section>
+
+        <!-- Placeholder Section -->
+        <section id="placeholder-section" class="section" {% if active_section != 'placeholder-section' %}style="display: none;"{% endif %}>
+            <h2>Placeholder Section</h2>
+            <p>This section is under construction.</p>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editUserForm">
+                <div class="form-group">
+                    <label for="edit-fname">First Name:</label>
+                    <input type="text" id="edit-fname" name="fname" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-sname">Last Name:</label>
+                    <input type="text" id="edit-sname" name="sname" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-email">Email:</label>
+                    <input type="email" id="edit-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-organization">Organization:</label>
+                    <input type="text" id="edit-organization" name="organization">
+                </div>
+                <div class="form-group">
+                    <label for="edit-account-type">Account Type:</label>
+                    <select id="edit-account-type" name="account_type" required>
+                        <option value="Standard">Standard</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Student">Student</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-id">ID Number:</label>
+                    <input type="text" id="edit-id" name="id">
+                </div>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </form>
+        </div>
     </div>
 
-</body>
+    <div id="editOrgModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Organization</h2>
+            <form id="editOrgForm">
+                <div class="form-group">
+                    <label for="edit-org-name">Organization Name:</label>
+                    <input type="text" id="edit-org-name" name="org_school_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-org-email">Email:</label>
+                    <input type="email" id="edit-org-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-org-account-type">Account Type:</label>
+                    <select id="edit-org-account-type" name="account_type" required>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </form>
+        </div>
+    </div>
 
+    <!-- Scripts -->
+    <script src="../static/admin.js"></script>
+</body>
 </html>
+

@@ -5,18 +5,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
+    <link id="style" href="../static/dashboard.css" rel="stylesheet" type="text/css">
+    <script src="../static/JScode.js" type="text/javascript"></script>
     <title>Komodo Hub</title>
 
 </head>
 
 <body>
 
+    <!-- Top Navigation -->
     <div class="topnav">
-        <a href="#home">Komodo Hub</a>
-        <h1>Hello, [PlaceholderUserName]</h1>
-        <a href="active">Sign Out</a>
+        <a href="#">Komodo Hub</a>
+        <h1 id="greeting">Hello, {{ username }}</h1>
+        <a href="/logout">Sign Out</a>
     </div>
 
-</body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="#" onclick="showSection('dashboard')">Dashboard</a></li>
+            <li><a href="#" onclick="showSection('posts')">Posts</a></li>
+            <li><a href="#" onclick="showSection('messages')">Messages</a></li>
+            <li><a href="homepage.html">Homepage</a></li>
+            <li><a href="organisation.html">Organisation</a></li>
+        </ul>
+    </div>
 
+    <!-- Main Content Area -->
+    <div class="content">
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2>Your Profile</h2>
+            <p>Name: {{ user.name }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Role: {{ user.role }}</p>
+        </div>
+
+        <!-- Posts Section -->
+        <div id="posts" class="section" style="display: none;">
+            <h2>Posts</h2>
+            
+            <!-- Form for posting text and image -->
+            <form action="/submit_post" method="POST" enctype="multipart/form-data">
+                <label for="post_content">Write your post:</label>
+                <textarea id="post_content" name="post_content" 
+                          placeholder="Write your post here..." 
+                          title="Write your post here..." 
+                          required></textarea>
+
+                <input type="hidden" name="username" value="{{ username }}">
+                
+                <label for="image">Attach an image:</label>
+                <input id="image" type="file" name="image" accept="image/*" 
+                       title="Upload an image">
+
+                <button type="submit">Submit</button>
+            </form>
+
+            <h3>Recent Posts</h3>
+            <ul>
+                {% for post in posts %}
+                    <li>
+                        {{ post.content }} - <i>{{ post.author }}</i>
+                        {% if post.image %}
+                            <br>
+                            <img src="data:image/jpeg;base64,{{ post.image }}" 
+                                 alt="Image uploaded by {{ post.author }}" 
+                                 class="post-image">
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Messages Section -->
+        <div id="messages" class="section" style="display: none;">
+            <h2>Messages</h2>
+            <p>Check messages from your teachers or classmates.</p>
+        </div>
+        
+    </div>
+    
+</body>
 </html>
