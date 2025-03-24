@@ -67,3 +67,20 @@ h1
 .topnav a:not(:first-child), .topnav input {
     margin-left: 15px;
 }
+
+.signIn
+{
+    background-color: #2e8b57;
+    color: #ffffff;
+    border: none;
+    font-size: 1rem;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+.signIn:hover
+{
+    background-color: #3cb371;
+}
