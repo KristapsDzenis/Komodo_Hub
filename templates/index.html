@@ -12,7 +12,7 @@
 <body>
 
     <div class="topnav">
-        <a href="#home">Komodo Hub</a>
+        <a href="/">Komodo Hub</a>
         {% if error %}
             <p style="color: red;">{{ error }}</p>
         {% endif %}
@@ -27,7 +27,7 @@
 
             <input type="hidden" name="source_page" value="index.html">
 
-            <button type="submit">Sign In</button>
+            <button type="submit" class="signIn">Sign In</button>
         </form>
 
         <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
