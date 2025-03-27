@@ -4,26 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
-    <title>School Chat - Students' Messages</title>
+    <title>Live Chat - Students' Messages</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-        }
-
-        #org_image
-        {
-            top: 50px;
-            left: 50px;
-            width: 300px;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            padding: 0
         }
 
         .topnav {
-            background-color: #333;
             overflow: hidden;
             padding: 10px;
         }
@@ -49,29 +38,26 @@
         }
 
         .chat-container {
-            position: absolute;
-            display: block;
-            width: 1500px;
-            height: auto;
-            left: 400px;
-            top: 100px;
-
+            position: relative;
+            margin: 50px auto;
+            width: 80%;
+            max-width: 1200px;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
         }
 
         .chat-box {
-            width: 60%;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
         }
 
         #chat-messages {
             flex-grow: 1;
-            max-height: 500px;
+            max-height: 400px;
             overflow-y: auto;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             padding-right: 10px;
         }
 
@@ -80,14 +66,17 @@
             align-items: center;
             border-top: 1px solid #ddd;
             padding: 10px 0;
+            background-color: #fafafa;
+            border-radius: 10px;
         }
 
         .chat-input input {
             border: 1px solid #ddd;
             padding: 10px;
-            width: 100%;
+            width: 90%;
             margin-right: 10px;
             border-radius: 5px;
+            font-size: 14px;
         }
 
         .chat-input button {
@@ -107,11 +96,17 @@
         .message {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 15px;
+            padding: 12px;
             background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+
+        .message:hover {
+            background-color: #f1f1f1;
         }
 
         .message img {
@@ -146,57 +141,93 @@
 
     <div class="topnav">
         <a href="#home">Komodo Hub</a>
-        <h1>Hello, [PlaceholderUserName]</h1>
+        <h1 id="greeting">Hello, [PlaceholderUserName]</h1>
         <a href="active">Sign Out</a>
-    </div>
-
-    <div id="org_image">
-
-    </div>
-
-    <div id="org_name">
-
     </div>
 
     <!-- Chat Box Container -->
     <div class="chat-container">
         <div class="chat-box">
-            <div id="chat-messages">
-                <!-- Example of a chat message -->
-                <div class="message">
-                    <!-- School logo or user's profile picture -->
-                    <img src="https://via.placeholder.com/50" alt="School Logo">
-                    <div class="message-content">
-                        <!-- User's full name and school info -->
-                        <div class="message-info">
-                            <strong>John Doe</strong> from <em>School</em>
-                        </div>
-                        <div class="message-text">
-                            Lorem ipsum
-                        </div>
-                    </div>
-                </div>
+            <div id="chat-messages"></div>
 
-                <div class="message">
-                    <img src="https://via.placeholder.com/50" alt="School Logo">
-                    <div class="message-content">
-                        <div class="message-info">
-                            <strong>John Doe</strong> from <em>School</em>
-                        </div>
-                        <div class="message-text">
-                            Lorem Ipsum
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input field for new chat messages -->
+            <!-- Chat Input -->
             <div class="chat-input">
-                <input type="text" placeholder="Type your message here...">
-                <button>Send</button>
+                <input type="text" id="message-input" placeholder="Type your message here...">
+                <button onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
+
+    <script>
+        let userData = {};  // Store user data here
+
+        // Function to fetch user info from the backend
+        async function fetchUserInfo() {
+            try {
+                const response = await fetch('/user-info');
+                const data = await response.json();
+
+                if (response.ok) {
+                    userData = data;  // Store user data
+
+                    // Update greeting message
+                    const greetingElement = document.getElementById('greeting');
+                    greetingElement.textContent = `Hello, ${data.username}`;
+                } else {
+                    console.error('Error fetching user info');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Function to send and display a new message locally
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const messageText = messageInput.value.trim();
+
+            if (messageText === '') return;  // Do not send empty messages
+
+            // Create new message element
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('message');
+
+            // Create profile image element
+            const profileImage = document.createElement('img');
+            profileImage.src = userData.profile_image_url;
+            profileImage.alt = userData.username;
+
+            // Create message content
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('message-content');
+
+            // Create message info (username and org name)
+            const messageInfo = document.createElement('div');
+            messageInfo.classList.add('message-info');
+            messageInfo.innerHTML = `<strong>${userData.username}</strong> from <em>${userData.org_school_name}</em>`;
+
+            // Create message text
+            const messageTextElement = document.createElement('div');
+            messageTextElement.classList.add('message-text');
+            messageTextElement.textContent = messageText;
+
+            // Append message parts to the message element
+            messageContent.appendChild(messageInfo);
+            messageContent.appendChild(messageTextElement);
+            messageElement.appendChild(profileImage);
+            messageElement.appendChild(messageContent);
+
+            // Append the new message to the chat messages div
+            const chatMessagesDiv = document.getElementById('chat-messages');
+            chatMessagesDiv.appendChild(messageElement);
+
+            // Clear input field
+            messageInput.value = '';
+        }
+
+        // Fetch user info when the page loads
+        window.onload = fetchUserInfo;
+    </script>
 
 </body>
 </html>
