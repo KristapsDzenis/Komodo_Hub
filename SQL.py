@@ -27,9 +27,7 @@ def check_db():
         account_type TEXT NOT NULL,
         profile_image BLOB
     );""")
-    connect_db.commit()  # commit changes to database
-    connect_db.close()  # close database
-
+    
 
 # function to insert new user data into user_details table
 def insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image):
