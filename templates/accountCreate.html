@@ -16,28 +16,45 @@
 
     <!-- top navigation bar -->
     <div class="topnav">
-        <a href="">Komodo Hub</a>
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
-        <a href="active">Sign In</a>
-        <a href="accountCreate.html">Sign Up</a>
+        <a href="/">Komodo Hub</a>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <label for="UName" class="" ></label>
+            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+             placeholder="Username">
+            <label for="Pword" class="" ></label>
+            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+            placeholder="Password">
+
+            <input type="hidden" name="source_page" value="accountCreate.html">
+
+            <button type="submit" class="signIn">Sign In</button>
+        </form>
+
+        <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
     </div>
 
     <!-- buttons to switch between forms -->
     <div id="page_navigation">
-        <button onclick="select_personal()" class="account_btn">Create Personal Account</button>
-        <button onclick="select_org()" class="org_btn">Create Organisation Account</button>
+        <button id="personal" onclick="select_personal()" class="account_btn current">Create Personal Account</button>
+        <button id="organisation" onclick="select_org()" class="org_btn">Create Organisation Account</button>
     </div>
 
     <!-- message window -->
-    <div id="error">
+    <div id="message">
          {% if success %}
-             <p style="color: green;">{{ success }}</p>
+             <p class="success">{{ success }}</p>
+         {% endif %}
+         {% if error2 %}
+             <p class="error">{{ error2 }}</p>
          {% endif %}
     </div>
 
     <!-- user account creation form -->
-    <div id="container_1">
+    <div id="container_1" >
 
         <form action="/create_account" method="post" enctype="multipart/form-data"><!-- links to flask function with button click at the bottom of the form -->
 
@@ -51,12 +68,12 @@
             <fieldset id="form_1">
                 <br>
                 <label for="UName" class="align" >*Username</label>
-                <input  type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                <input  type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="35"
                         title="Can only enter letters and numbers" placeholder="Username" required>
                 <br>
                 <br>
                 <label for="PWord" class="align" >*Password</label>
-                <input  type="text" id="PWord" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                <input  type="text" id="PWord" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="35"
                         title="Can only enter letters and numbers" placeholder="Password" required>
                 <br>
             </fieldset>
@@ -64,26 +81,26 @@
             <fieldset id="form_2">
                 <br>
                 <label for="pEmail" class="align" >*Email</label>
-                <input id="pEmail" size="30" type="email"  name="Email" placeholder="E-mail" required>
+                <input id="pEmail" size="35" type="email"  name="Email" placeholder="E-mail" required>
                 <br>
                 <br>
                  <label for="fName" class="align" >*First name</label>
-                <input  type="text" id="fName" maxlength="30" minlength="2" name="First Name" pattern="[A-Za-z]{2,30}" size="30"
+                <input  type="text" id="fName" maxlength="30" minlength="2" name="First Name" pattern="[A-Za-z]{2,30}" size="35"
                         title="Can only enter letters" placeholder="First name" required>
                 <br>
                 <br>
                 <label for="lName" class="align" >*Last name</label>
-                <input  type="text" id="lName" maxlength="30" minlength="2" name="Last Name" pattern="[A-Za-z]{2,30}" size="30"
+                <input  type="text" id="lName" maxlength="30" minlength="2" name="Last Name" pattern="[A-Za-z]{2,30}" size="35"
                         title="Can only enter letters" placeholder="Last name" required>
                 <br>
                 <br>
                 <label for="OrgName" class="align" >*Organisation/School Name</label>
-                <input  type="text" id="OrgName" maxlength="30" minlength="2" name="OrgName" pattern="[A-Za-z]{2,30}" size="30"
+                <input  type="text" id="OrgName" maxlength="30" minlength="2" name="OrgName" pattern="[A-Za-z]{2,30}" size="35"
                         title="Can only enter letters" placeholder="Organisation/School Name" required>
                 <br>
                 <br>
                 <label class="" for="Type">*Account Type</label>
-                <input id="Type" list="type" name="Type" placeholder="Type" required>
+                <input id="Type" list="type" name="Type" placeholder="Type" size="35" required>
                 <datalist id="type">
 
                     <option value="Standard">
@@ -92,21 +109,24 @@
 
                 </datalist>
                 <br>
-                <p> If user type admin, teacher or student provide your ID number bellow:</p>
                 <br>
+                <br>
+                <p class="type_text"> If user type admin, teacher or student provide your ID number bellow:</p>
+                <br>
+
                 <label for="ID" class="align" >ID Number</label>
-                <input  type="text" id="ID" maxlength="10" minlength="6" name="ID Number" pattern="[[(A-Za-z)(0-9)\s]{6,10}" size="20"
+                <input  type="text" id="ID" maxlength="10" minlength="6" name="ID Number" pattern="[[(A-Za-z)(0-9)\s]{6,10}" size="35"
                         title="Can only enter letters and numbers" placeholder="ID Number">
             </fieldset>
 
-            <button type="submit" class="">Submit</button>
+            <button type="submit" class="create_btn">Submit</button>
 
         </form>
 
     </div>
 
     <!-- organisation account creation form -->
-    <div id="container_2">
+    <div id="container_2" >
 
         <form action="/create_org" method="post" enctype="multipart/form-data"><!-- links to flask function with button click at the bottom of the form -->
 
@@ -120,12 +140,12 @@
             <fieldset id="form_1">
                 <br>
                 <label for="UName" class="align" >*Username</label>
-                <input  type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                <input  type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="35"
                         title="Can only enter letters and numbers" placeholder="Username" required>
                 <br>
                 <br>
                 <label for="PWord" class="align" >*Password</label>
-                <input  type="text" id="PWord" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="30"
+                <input  type="text" id="PWord" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}" size="35"
                         title="Can only enter letters and numbers" placeholder="Password" required>
                 <br>
             </fieldset>
@@ -133,15 +153,15 @@
             <fieldset id="form_2">
                 <br>
                 <label for="pEmail" class="align" >*Email</label>
-                <input id="pEmail" size="30" type="email"  name="Email" placeholder="E-mail" required>
+                <input id="pEmail" size="35" type="email"  name="Email" placeholder="E-mail" required>
                 <br>
                 <br>
                 <label for="OrgName" class="align" >*Organisation/School Name</label>
-                <input  type="text" id="OrgName" maxlength="30" minlength="2" name="OrgName" pattern="[A-Za-z]{2,30}" size="30"
+                <input  type="text" id="OrgName" maxlength="30" minlength="2" name="OrgName" pattern="[A-Za-z]{2,30}" size="35"
                         title="Can only enter letters" placeholder="Organisation/School Name" required>
             </fieldset>
 
-            <button class="" type="submit" >Submit</button>
+            <button type="submit" class="create_btn">Submit</button>
 
         </form>
 
