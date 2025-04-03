@@ -105,26 +105,29 @@
   </style>
 </head>
 <body>
-  <div class="topnav">
-    <a href="#home">Komodo Hub</a>
-    {% if current_user %}
-      <h1>Hello, {{ current_user }}</h1>
-      <a href="{{ url_for('logout') }}">Sign Out</a>
-    {% else %}
-      <form action="{{ url_for('login') }}" method="POST" style="display:inline-block;">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <!-- Use the same styling as sign up link by applying CSS or a class -->
-        <a href="active">Sign In</a>
-      </form>
-      <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
-      {% if error %}
-        <div style="color:red; display:inline-block; margin-left:10px;">{{ error }}</div>
-      {% endif %}
-    {% endif %}
-  </div>
 
-  <!-- Everyone sees the feed container -->
+    <div class="topnav">
+        <a href="/">Komodo Hub</a>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <form action="/login" method="post">
+            <label for="UName" class="" ></label>
+            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+             placeholder="Username">
+            <label for="Pword" class="" ></label>
+            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
+            placeholder="Password">
+
+            <input type="hidden" name="source_page" value="index.html">
+
+            <button type="submit" class="signIn">Sign In</button>
+        </form>
+
+        <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
+
+       <!-- Everyone sees the feed container -->
   <div class="feed-container">
     <!-- New Post -->
     <div class="new-post">
@@ -173,129 +176,5 @@
     {% endfor %}
   </div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      // Convert current_user to boolean in JS
-      var isLoggedIn = {{ 'true' if current_user else 'false' }};
-
-      // Post button
-      const postBtn = document.getElementById("post-btn");
-      postBtn.addEventListener("click", function() {
-        if (!isLoggedIn) {
-          alert("You need to sign in or register first.");
-          return;
-        }
-        const content = document.getElementById("new-post-text").value.trim();
-        if (!content) {
-          alert("Post cannot be empty.");
-          return;
-        }
-        const formData = new FormData();
-        formData.append("content", content);
-        const imageFile = document.getElementById("new-post-image").files[0];
-        if (imageFile) {
-          formData.append("image", imageFile);
-        }
-        fetch("/new_post", {
-          method: "POST",
-          body: formData
-        })
-        .then(r => r.json())
-        .then(data => {
-          if (data.success) {
-            location.reload(); // or dynamically insert new post
-          } else {
-            alert("Failed to add post.");
-          }
-        })
-        .catch(err => {
-          console.error("Error adding post:", err);
-          alert("Failed to add post.");
-        });
-      });
-
-      // Attach listeners for each post
-      document.querySelectorAll(".post-card").forEach(attachPostListeners);
-
-      function attachPostListeners(postCard) {
-        const postId = postCard.getAttribute("data-post-id");
-        const likeBtn = postCard.querySelector(".like-btn");
-        const commentToggleBtn = postCard.querySelector(".comment-toggle-btn");
-        const addCommentBtn = postCard.querySelector(".add-comment-btn");
-
-        // Like
-        likeBtn.addEventListener("click", function() {
-          if (!isLoggedIn) {
-            alert("You need to sign in or register first.");
-            return;
-          }
-          const isLiked = likeBtn.classList.contains("liked");
-          fetch("/like_post", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ post_id: postId })
-          })
-          .then(r => r.json())
-          .then(data => {
-            if (data.success) {
-              likeBtn.querySelector(".like-count").textContent = data.new_likes;
-              if (isLiked) {
-                likeBtn.classList.remove("liked");
-              } else {
-                likeBtn.classList.add("liked");
-              }
-            }
-          })
-          .catch(err => {
-            console.error("Error liking post:", err);
-            alert("Failed to update like.");
-          });
-        });
-
-        // Comment toggle
-        commentToggleBtn.addEventListener("click", function() {
-          const commentSection = document.getElementById("comment-section-" + postId);
-          commentSection.style.display = (commentSection.style.display === "none" || !commentSection.style.display)
-            ? "block"
-            : "none";
-        });
-
-        // Add comment
-        addCommentBtn.addEventListener("click", function() {
-          if (!isLoggedIn) {
-            alert("You need to sign in or register first.");
-            return;
-          }
-          const commentInput = postCard.querySelector(".comment-input");
-          const commentText = commentInput.value.trim();
-          if (!commentText) {
-            alert("Comment cannot be empty.");
-            return;
-          }
-          fetch("/add_comment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ post_id: postId, comment: commentText })
-          })
-          .then(r => r.json())
-          .then(data => {
-            if (data.success) {
-              const commentList = postCard.querySelector(".comment-list");
-              const c = data.comment;
-              const commentDiv = document.createElement("div");
-              commentDiv.className = "comment";
-              commentDiv.innerHTML = `<strong>${c.username}</strong>: ${c.comment} <small>${c.timestamp}</small>`;
-              commentList.appendChild(commentDiv);
-              commentInput.value = "";
-            }
-          })
-          .catch(err => {
-            console.error("Error adding comment:", err);
-            alert("Failed to add comment.");
-          });
-        });
-      }
-    });
-  </script>
 </body>
 </html>

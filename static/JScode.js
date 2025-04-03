@@ -38,6 +38,8 @@ function select_personal(){
     document.getElementById("container_1").style.zIndex = '1';
     document.getElementById("container_2").style.display = 'none';
     document.getElementById("container_2").style.zIndex = '0';
+    document.getElementById("personal").classList.add("current");
+    document.getElementById("organisation").classList.remove("current");
 }
 
 /*function to switch to organisation account creation form*/
@@ -46,4 +48,26 @@ function select_org(){
     document.getElementById("container_1").style.zIndex = '0';
     document.getElementById("container_2").style.display = 'block';
     document.getElementById("container_2").style.zIndex = '1';
+    document.getElementById("organisation").classList.add("current");
+    document.getElementById("personal").classList.remove("current");
 }
+
+/* Function to switch between dashboard sections */
+function showSection(sectionId) {
+    let sections = document.querySelectorAll('.section');
+    sections.forEach(function(section) {
+        section.style.display = 'none';
+    });
+    document.getElementById(sectionId).style.display = 'block';
+}
+
+/* Function to personalize greeting */
+function personalizeGreeting() {
+    let username = "User"; // Replace with actual backend data
+    document.getElementById("greeting").innerText = "Hello, " + username;
+}
+
+/* Event listener to run functions when the page loads */
+document.addEventListener("DOMContentLoaded", function() {
+    personalizeGreeting();
+});
