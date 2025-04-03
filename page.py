@@ -208,15 +208,19 @@ def delete_organization(username):
         connect_db.commit()
         connect_db.close()
         
-        # Get the admin username from the referrer URL
-        admin_username = request.referrer.split('/admin/')[1].split('?')[0]
-        # Get the current section from the referrer
-        current_url = request.referrer
-        section = 'organizations-section'  # default to organizations for org deletion
-        if '?section=' in current_url:
-            section = current_url.split('?section=')[1]
+        # Get the admin username from the form data
+        admin_username = request.form.get('admin_username')
+        if not admin_username:
+            # Fallback to referrer if form data not available
+            try:
+                admin_username = request.referrer.split('/admin/')[1].split('?')[0]
+            except:
+                return "Error: Could not determine admin username", 400
         
-        return redirect(url_for('render_admin_panel', username=admin_username, section=section))
+        return redirect(url_for('render_admin_panel', 
+                              username=admin_username, 
+                              section='organizations-section',
+                              success="Organization deleted successfully!"))
     except Exception as e:
         return f"Error deleting organization: {str(e)}", 500
 
@@ -269,6 +273,89 @@ def edit_organization(username):
         return jsonify({'success': True, 'message': f'Organization {username} updated successfully'})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/admin/create_user', methods=['POST'])
+def create_user_admin():
+    try:
+        username = request.form.get('Username')
+        password = request.form.get('Password')
+        email = request.form.get('Email')
+        firstName = request.form.get('First Name')
+        lastName = request.form.get('Last Name')
+        Org_School = request.form.get('OrgName')
+        acc_Type = request.form.get('Type')
+        ID = request.form.get('ID Number')
+        
+        # Handle image upload
+        image = request.files['image']
+        image_data = image.read() if image else None
+
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Check if username already exists
+        data = SQL.fetch_user_details(username, cursor)
+        if data:
+            connect_db.close()
+            return render_template('admin.html', 
+                                error="Username already exists!",
+                                active_section='create-user-section')
+        
+        # Insert new user
+        SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image_data)
+        connect_db.close()
+        
+        # Get the admin username from the referrer URL
+        admin_username = request.referrer.split('/admin/')[1].split('?')[0]
+        
+        return redirect(url_for('render_admin_panel', 
+                              username=admin_username, 
+                              section='users-section',
+                              success="User created successfully!"))
+    except Exception as e:
+        return render_template('admin.html', 
+                             error=f"Error creating user: {str(e)}",
+                             active_section='create-user-section')
+
+@app.route('/admin/create_organization', methods=['POST'])
+def create_organization_admin():
+    try:
+        username = request.form.get('Username')
+        password = request.form.get('Password')
+        email = request.form.get('Email')
+        Org_School = request.form.get('OrgName')
+        acc_Type = "Admin"  # Organizations are always Admin type
+        
+        # Handle image upload
+        image = request.files['image']
+        image_data = image.read() if image else None
+
+        connect_db = sqlite3.connect('database.db')
+        cursor = connect_db.cursor()
+        
+        # Check if username already exists
+        data = SQL.fetch_org_details(username, cursor)
+        if data:
+            connect_db.close()
+            return render_template('admin.html', 
+                                error="Organization username already exists!",
+                                active_section='create-org-section')
+        
+        # Insert new organization
+        SQL.insert_org(username, password, email, Org_School, acc_Type, image_data)
+        connect_db.close()
+        
+        # Get the admin username from the referrer URL
+        admin_username = request.referrer.split('/admin/')[1].split('?')[0]
+        
+        return redirect(url_for('render_admin_panel', 
+                              username=admin_username, 
+                              section='organizations-section',
+                              success="Organization created successfully!"))
+    except Exception as e:
+        return render_template('admin.html', 
+                             error=f"Error creating organization: {str(e)}",
+                             active_section='create-org-section')
 
 # END OF ADMIN PANEL CODE
 

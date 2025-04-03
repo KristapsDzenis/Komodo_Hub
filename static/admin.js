@@ -1,21 +1,28 @@
 // Section navigation
 function showSection(sectionId) {
     // Hide all sections
-    const sections = document.getElementsByClassName('section');
-    for (let section of sections) {
+    document.querySelectorAll('.section').forEach(section => {
         section.style.display = 'none';
-    }
+    });
     
     // Show the selected section
-    document.getElementById(sectionId).style.display = 'block';
+    const selectedSection = document.getElementById(sectionId);
+    if (selectedSection) {
+        selectedSection.style.display = 'block';
+    }
     
     // Update active state in sidebar
-    const sidebarLinks = document.querySelectorAll('.sidebar-content a');
-    sidebarLinks.forEach(link => link.classList.remove('active'));
+    document.querySelectorAll('.sidebar a').forEach(link => {
+        link.classList.remove('active');
+    });
     
-    // Add active class to clicked link
-    const clickedLink = document.querySelector(`[onclick="showSection('${sectionId}')"]`);
-    clickedLink.classList.add('active');
+    // If it's a main section, highlight the sidebar link
+    if (sectionId === 'users-section' || sectionId === 'organizations-section' || sectionId === 'placeholder-section' || sectionId === 'placeholder2-section') {
+        const sidebarLink = document.getElementById(sectionId.replace('-section', '-link'));
+        if (sidebarLink) {
+            sidebarLink.classList.add('active');
+        }
+    }
 
     // Update URL with the new section
     const currentUrl = new URL(window.location.href);
