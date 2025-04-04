@@ -23,7 +23,7 @@
         <div class="sidebar-content">
             <p><a href="#" onclick="showSection('users-section')" {% if active_section == 'users-section' %}class="active"{% endif %} id="users-link">Users</a></p>
             <p><a href="#" onclick="showSection('organizations-section')" {% if active_section == 'organizations-section' %}class="active"{% endif %} id="organizations-link">Organisations</a></p>
-            <p><a href="#" onclick="showSection('placeholder-section')" {% if active_section == 'placeholder-section' %}class="active"{% endif %} id="placeholder-link">Placeholder</a></p>
+            <p><a href="/renderpage/{{ admin_username }}">My feed!</a></p>
         </div>
     </nav>
 

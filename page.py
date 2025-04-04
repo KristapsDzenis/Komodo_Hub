@@ -385,6 +385,21 @@ def account(username):
 # END OF ACCOUNT DETAILS CODE
 
 
+# USER MAIN CODE (Stefan Barbu)
+
+# Function to create a database connection
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row  # Enables dictionary-like row access
+    return conn
+
+@app.route('/renderpage/<admin_username>')
+def renderpage(admin_username):
+    return render_template('userMain.html', username=admin_username)
+
+# END OF USER MAIN CODE
+
+
 SQL.check_db()
 
 def run_app():
