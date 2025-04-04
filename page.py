@@ -1,16 +1,20 @@
+
 # Python Flask file
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, Response, session
 import webbrowser
 import threading
 import SQL
 import sqlite3
+from datetime import datetime
 import base64
 
 app = Flask(__name__)
 
+
+
 # opens web browser with specified address with flask app
+
 def open_browser():
-    """Open the default web browser when the server starts."""
     webbrowser.open_new("http://127.0.0.1:5000/")
 
 # renders index page, '/' means first page rendered with flask
@@ -88,7 +92,6 @@ def create_account():
     else:
         return render_template('accountCreate.html', error2="Username already exists!\nTry different username")  # rerender page
 
-
 @app.route('/create_org', methods=['POST'])
 def create_org():
     username = request.form.get('Username')
@@ -96,7 +99,7 @@ def create_org():
     email = request.form.get('Email')
     Org_School = request.form.get('OrgName')
     acc_Type = "Admin"
-    # stores image in variable and converts to binary
+   # stores image in variable and converts to binary
     image = request.files['image']
     image = image.read()
 
@@ -112,8 +115,79 @@ def create_org():
     else:
         return render_template('accountCreate.html', error2="Username already exists!\nTry different username")  # rerender page
 
+
+
 # END OF ACCOUNT CREATION CODE
 
+# Main page code (Mykyta Bilous)
+   # Everyone can see the feed
+    posts = SQL.get_posts()
+    for post in posts:
+        post['comments'] = SQL.get_comments(post['id'])
+    current_user = session.get('username')  # or None if not logged in
+    error = request.args.get('error')       # optional error message from login
+    return render_template('index.html', posts=posts, current_user=current_user, error=error)
+
+@app.route('/post_image/<int:post_id>')
+def post_image(post_id):
+    image_data = SQL.get_post_image(post_id)
+    if not image_data:
+        return "", 404
+    return Response(image_data, mimetype='image/jpeg')
+
+# -------------- New Post, Like, Comment --------------
+@app.route('/new_post', methods=['POST'])
+def new_post():
+    if 'username' not in session:
+        return jsonify({"success": False, "error": "Not logged in"}), 403
+    username = session['username']
+    content = request.form.get('content')
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    image_file = request.files.get('image')
+    image_data = image_file.read() if image_file else None
+
+    post_id = SQL.insert_post(username, content, timestamp, image_data)
+    return jsonify({
+        "success": True,
+        "post": {
+            "id": post_id,
+            "username": username,
+            "content": content,
+            "timestamp": "Just now",
+            "likes": 0,
+            "hasImage": bool(image_data)
+        }
+    })
+
+@app.route('/like_post', methods=['POST'])
+def like_post():
+    if 'username' not in session:
+        return jsonify({"success": False, "error": "Not logged in"}), 403
+    data = request.get_json()
+    post_id = data.get("post_id")
+    username = session['username']
+    new_likes = SQL.toggle_like(post_id, username)
+    return jsonify({"success": True, "new_likes": new_likes})
+
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    if 'username' not in session:
+        return jsonify({"success": False, "error": "Not logged in"}), 403
+    data = request.get_json()
+    post_id = data.get("post_id")
+    username = session['username']
+    comment = data.get("comment")
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    comment_id = SQL.insert_comment(post_id, username, comment, timestamp)
+    return jsonify({
+        "success": True,
+        "comment": {
+            "id": comment_id,
+            "username": username,
+            "comment": comment,
+            "timestamp": timestamp
+        }
+    })
 # ADMIN PANEL CODE (Milo Byrnes)
 
 # changed by including username variable passed from login function
@@ -327,8 +401,10 @@ def renderpage(admin_username):
 
 
 SQL.check_db()
-if __name__ == '__main__':
+
+def run_app():
     threading.Timer(1.25, open_browser).start()
     app.run(debug=True)
 
-
+if __name__ == '__main__':
+    run_app()
