@@ -391,3 +391,5 @@ def run_app():
     threading.Timer(1.25, open_browser).start()
     app.run(debug=True)
 
+if __name__ == '__main__':
+    run_app()
