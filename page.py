@@ -296,45 +296,15 @@ def account(username):
 
 # USER MAIN CODE (Stefan Barbu)
 
-# Database connection helper function
+# Function to create a database connection
 def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row  # Enables dictionary-like row access
     return conn
 
-
-# Function to fetch the organization name and profile image based on the username
-def get_org_details_by_username(username):
-    conn = get_db_connection()  # Use the db connection helper
-    cursor = conn.cursor()
-    # Query the 'org_details' table for 'org_school_name' and 'profile_image'
-    cursor.execute('SELECT org_school_name, profile_image FROM org_details WHERE username = ? LIMIT 1', (username,))
-    org_details = cursor.fetchone()
-    conn.close()
-    return org_details
-
-
-# Route to fetch organization details (name and profile image) based on username passed via query parameter
-@app.route('/org-details', methods=['GET'])
-def org_details():
-    # Get the username from the query parameter
-    username = request.args.get('username')
-
-    if not username:
-        return jsonify({'error': 'Username not provided'}), 400
-
-    # Fetch the organization name and profile image for the provided username
-    org_details = get_org_details_by_username(username)
-    if org_details:
-        return jsonify({
-            'org_school_name': org_details['org_school_name'],
-            'profile_image': org_details['profile_image']
-        }), 200
-    return jsonify({'error': 'Organization details not found for the user'}), 404
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/renderpage/<admin_username>')
+def renderpage(admin_username):
+    return render_template('userMain.html', username=admin_username)
 
 # END OF USER MAIN CODE
 

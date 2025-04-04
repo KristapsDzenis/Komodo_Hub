@@ -1,148 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
-    <title>Live Chat - Students' Messages</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0
-        }
-
-        .topnav {
-            overflow: hidden;
-            padding: 10px;
-        }
-
-        .topnav a {
-            float: right;
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .topnav a:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .topnav h1 {
-            color: white;
-            margin-left: 20px;
-            display: inline-block;
-        }
-
-        .chat-container {
-            position: relative;
-            margin: 50px auto;
-            width: 80%;
-            max-width: 1200px;
-            background-color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .chat-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #chat-messages {
-            flex-grow: 1;
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-            padding-right: 10px;
-        }
-
-        .chat-input {
-            display: flex;
-            align-items: center;
-            border-top: 1px solid #ddd;
-            padding: 10px 0;
-            background-color: #fafafa;
-            border-radius: 10px;
-        }
-
-        .chat-input input {
-            border: 1px solid #ddd;
-            padding: 10px;
-            width: 90%;
-            margin-right: 10px;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        .chat-input button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .chat-input button:hover {
-            background-color: #218838;
-        }
-
-        /* Message styling */
-        .message {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            padding: 12px;
-            background-color: #fff;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-        }
-
-        .message:hover {
-            background-color: #f1f1f1;
-        }
-
-        .message img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .message-content {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            padding: 10px;
-            max-width: 85%;
-            flex-grow: 1;
-        }
-
-        .message-info {
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .message-text {
-            font-size: 16px;
-            color: #333;
-        }
-
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link id="style" href="../static/userMain.css" rel="stylesheet" type="text/css" />
+    <title>My posts!</title>
 </head>
 <body>
 
     <div class="topnav">
         <a href="#home">Komodo Hub</a>
-        <h1 id="greeting">Hello, [PlaceholderUserName]</h1>
-        <a href="active">Sign Out</a>
+        <h1>Hello, {{ username }}</h1>
+        <a href="/">Sign Out</a>
     </div>
 
     <!-- Chat Box Container -->
@@ -152,80 +21,48 @@
 
             <!-- Chat Input -->
             <div class="chat-input">
-                <input type="text" id="message-input" placeholder="Type your message here...">
+                <input type="text" id="message-input" placeholder="Type your message here..." />
                 <button onclick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
 
     <script>
-        let userData = {};  // Store user data here
-
-        // Function to fetch user info from the backend
-        async function fetchUserInfo() {
-            try {
-                const response = await fetch('/user-info');
-                const data = await response.json();
-
-                if (response.ok) {
-                    userData = data;  // Store user data
-
-                    // Update greeting message
-                    const greetingElement = document.getElementById('greeting');
-                    greetingElement.textContent = `Hello, ${data.username}`;
-                } else {
-                    console.error('Error fetching user info');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        // Function to send and display a new message locally
         function sendMessage() {
             const messageInput = document.getElementById('message-input');
             const messageText = messageInput.value.trim();
 
-            if (messageText === '') return;  // Do not send empty messages
+            if (messageText === '') return;
 
-            // Create new message element
             const messageElement = document.createElement('div');
             messageElement.classList.add('message');
 
-            // Create profile image element
             const profileImage = document.createElement('img');
             profileImage.src = userData.profile_image_url;
             profileImage.alt = userData.username;
 
-            // Create message content
             const messageContent = document.createElement('div');
             messageContent.classList.add('message-content');
 
-            // Create message info (username and org name)
             const messageInfo = document.createElement('div');
             messageInfo.classList.add('message-info');
             messageInfo.innerHTML = `<strong>${userData.username}</strong> from <em>${userData.org_school_name}</em>`;
 
-            // Create message text
             const messageTextElement = document.createElement('div');
             messageTextElement.classList.add('message-text');
             messageTextElement.textContent = messageText;
 
-            // Append message parts to the message element
             messageContent.appendChild(messageInfo);
             messageContent.appendChild(messageTextElement);
             messageElement.appendChild(profileImage);
             messageElement.appendChild(messageContent);
 
-            // Append the new message to the chat messages div
             const chatMessagesDiv = document.getElementById('chat-messages');
             chatMessagesDiv.appendChild(messageElement);
 
-            // Clear input field
             messageInput.value = '';
         }
 
-        // Fetch user info when the page loads
         window.onload = fetchUserInfo;
     </script>
 
