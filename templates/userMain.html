@@ -1,70 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link id="style" href="../static/userMain.css" rel="stylesheet" type="text/css" />
-    <title>My posts!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link id="style" href="../static/userMain.css" rel="stylesheet" type="text/css" />
+  <title>My posts!</title>
 </head>
 <body>
 
-    <div class="topnav">
-        <a href="#home">Komodo Hub</a>
-        <h1>Hello, {{ username }}</h1>
-        <a href="/">Sign Out</a>
-    </div>
-
-    <!-- Chat Box Container -->
-    <div class="chat-container">
-        <div class="chat-box">
-            <div id="chat-messages"></div>
-
-            <!-- Chat Input -->
-            <div class="chat-input">
-                <input type="text" id="message-input" placeholder="Type your message here..." />
-                <button onclick="sendMessage()">Send</button>
-            </div>
+    <!-- Navigation -->
+    <header>
+        <div class="topnav">
+            <a href="#home">Komodo Hub</a>
+            <h1>Welcome, {{ username }}</h1>
+            <a href="/">Sign Out</a>
         </div>
+    </header>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <div class="sidebar-content">
+      <p><a href="#" onclick="showSection('users-section')" {% if active_section == 'users-section' %}class="active"{% endif %} id="users-link">Users</a></p>
+      <p><a href="#" onclick="showSection('organizations-section')" {% if active_section == 'organizations-section' %}class="active"{% endif %} id="organizations-link">Organisations</a></p>
+      <p><a href="#" onclick="window.location.reload();">My feed!</a></p>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <div class="content">
+
+    <!-- Profile Section -->
+    <div class="profile-header">
+      <div class="banner"></div>
+      <div class="profile-info">
+        <img src="https://via.placeholder.com/100" alt="User Avatar" class="avatar" />
+        <div>
+          <h2>{{ username }}</h2>
+          <p class="bio">This is a short bio about the user or organization. You can update this in your settings.</p>
+        </div>
+      </div>
     </div>
 
-    <script>
-        function sendMessage() {
-            const messageInput = document.getElementById('message-input');
-            const messageText = messageInput.value.trim();
+    <!-- Post Feed -->
+    <div class="post-feed">
+      <!-- Example Post 1 (Org post) -->
+      <div class="post">
+        <h3>x</h3>
+        <p></p>
+      </div>
+    </div>
 
-            if (messageText === '') return;
-
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-
-            const profileImage = document.createElement('img');
-            profileImage.src = userData.profile_image_url;
-            profileImage.alt = userData.username;
-
-            const messageContent = document.createElement('div');
-            messageContent.classList.add('message-content');
-
-            const messageInfo = document.createElement('div');
-            messageInfo.classList.add('message-info');
-            messageInfo.innerHTML = `<strong>${userData.username}</strong> from <em>${userData.org_school_name}</em>`;
-
-            const messageTextElement = document.createElement('div');
-            messageTextElement.classList.add('message-text');
-            messageTextElement.textContent = messageText;
-
-            messageContent.appendChild(messageInfo);
-            messageContent.appendChild(messageTextElement);
-            messageElement.appendChild(profileImage);
-            messageElement.appendChild(messageContent);
-
-            const chatMessagesDiv = document.getElementById('chat-messages');
-            chatMessagesDiv.appendChild(messageElement);
-
-            messageInput.value = '';
-        }
-
-        window.onload = fetchUserInfo;
-    </script>
+  </div>
 
 </body>
 </html>
