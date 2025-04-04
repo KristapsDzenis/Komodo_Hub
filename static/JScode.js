@@ -38,6 +38,8 @@ function select_personal(){
     document.getElementById("container_1").style.zIndex = '1';
     document.getElementById("container_2").style.display = 'none';
     document.getElementById("container_2").style.zIndex = '0';
+    document.getElementById("personal").classList.add("current");
+    document.getElementById("organisation").classList.remove("current");
 }
 
 /*function to switch to organisation account creation form*/
@@ -46,6 +48,8 @@ function select_org(){
     document.getElementById("container_1").style.zIndex = '0';
     document.getElementById("container_2").style.display = 'block';
     document.getElementById("container_2").style.zIndex = '1';
+    document.getElementById("organisation").classList.add("current");
+    document.getElementById("personal").classList.remove("current");
 }
 
 /* Function to switch between dashboard sections */

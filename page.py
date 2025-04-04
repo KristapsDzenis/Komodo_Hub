@@ -76,9 +76,18 @@ def create_account():
     image = request.files['image']
     image = image.read()
 
-    print(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)  # debugger
-    SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
-    return render_template('accountCreate.html', success="Congratulations! Account created successfully") # rerender page
+    connect_db = sqlite3.connect('database.db')  # connect to database
+    cursor = connect_db.cursor()
+    data = SQL.fetch_user_details(username, cursor)
+    connect_db.close()  # close database
+
+    if not data:
+        print(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)  # debugger
+        SQL.insert_user(username, password, email, firstName, lastName, Org_School, acc_Type, ID, image)    # run sql query
+        return render_template('accountCreate.html', success="Congratulations! Account created successfully") # rerender page
+    else:
+        return render_template('accountCreate.html', error2="Username already exists!\nTry different username")  # rerender page
+
 
 @app.route('/create_org', methods=['POST'])
 def create_org():
@@ -91,9 +100,17 @@ def create_org():
     image = request.files['image']
     image = image.read()
 
-    print(username, password, email, Org_School, acc_Type, image)  # debugger
-    SQL.insert_org(username, password, email, Org_School, acc_Type, image)    # run sql query
-    return render_template('accountCreate.html', success="Congratulations! Account created successfully")    # rerender page
+    connect_db = sqlite3.connect('database.db')  # connect to database
+    cursor = connect_db.cursor()
+    data = SQL.fetch_org_details(username, cursor)
+    connect_db.close()  # close database
+
+    if not data:
+        print(username, password, email, Org_School, acc_Type, image)  # debugger
+        SQL.insert_org(username, password, email, Org_School, acc_Type, image)    # run sql query
+        return render_template('accountCreate.html', success="Congratulations! Account created successfully")    # rerender page
+    else:
+        return render_template('accountCreate.html', error2="Username already exists!\nTry different username")  # rerender page
 
 # END OF ACCOUNT CREATION CODE
 
