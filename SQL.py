@@ -207,7 +207,7 @@ def check_user_credentials(username, password):
     return "ok"
 
 # Insert new post (text + image)
-def insert_post(username, content, image):
+def insert_new_post(username, content, image):
     connect_db = sqlite3.connect('database.db')
     cursor = connect_db.cursor()
 
