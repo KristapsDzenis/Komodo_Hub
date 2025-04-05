@@ -211,7 +211,7 @@ def insert_new_post(username, content, image):
     connect_db = sqlite3.connect('database.db')
     cursor = connect_db.cursor()
 
-    cursor.execute("INSERT INTO user_posts (username, content, image) VALUES (?, ?, ?)", 
+    cursor.execute("INSERT INTO posts (username, content, image) VALUES (?, ?, ?)", 
                    (username, content, image))
     
     connect_db.commit()
@@ -220,7 +220,7 @@ def insert_new_post(username, content, image):
 
 # Fetch posts (including images)
 def fetch_posts(cursor):
-    cursor.execute("SELECT username, content, image FROM user_posts ORDER BY id DESC")
+    cursor.execute("SELECT username, content, image FROM posts ORDER BY id DESC")
     return cursor.fetchall()
 
 if __name__ == '__main__':
