@@ -54,6 +54,17 @@ h1
     background-color: #3cb371; /* Lighter green */
 }
 
+.nav-button {
+    color: #fff;
+    background-color: #2e8b57;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
 .topnav input:hover
 {
     background-color: #e2e2e2;

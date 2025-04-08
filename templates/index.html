@@ -1,14 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css">
-    <title>Komodo Hub</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link id="style" href="../static/frame.css" rel="stylesheet" type="text/css" />
+  <title>Komodo Hub</title>
+  <style>
+    .feed-container {
+      max-width: 600px;
+      margin: 80px auto 20px auto;
+    }
+    .new-post, .post-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .new-post textarea {
+      width: 100%;
+      border: none;
+      resize: vertical;
+      outline: none;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    .new-post input[type="file"] {
+      margin-top: 10px;
+      display: block;
+    }
+    .new-post button {
+      float: right;
+      margin-top: 10px;
+      padding: 6px 12px;
+      background-color: #2e8b57;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .post-header img {
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    .post-body img {
+      max-width: 100%;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .post-footer {
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    .post-footer button {
+      background: none;
+      border: none;
+      color: #606770;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .post-footer button.liked {
+      background-color: #3cb371;
+      color: #fff;
+      border-radius: 4px;
+      padding: 4px 8px;
+    }
+    .comment-section {
+      margin-top: 10px;
+      border-top: 1px dashed #ccc;
+      padding-top: 10px;
+      display: none;
+    }
+    .comment {
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .add-comment {
+      display: flex;
+      margin-top: 5px;
+    }
+    .add-comment input {
+      flex: 1;
+      padding: 5px;
+      font-size: 13px;
+    }
+    .add-comment button {
+      padding: 5px 10px;
+      background-color: #2e8b57;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+    }
+  </style>
 </head>
-
 <body>
 
     <div class="topnav">
@@ -33,6 +128,54 @@
         <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
     </div>
 
-</body>
+       <!-- Everyone sees the feed container -->
+  <div class="feed-container">
+    <!-- New Post -->
+    <div class="new-post">
+      <textarea rows="3" id="new-post-text" placeholder="What's on your mind?"></textarea>
+      <input type="file" id="new-post-image" name="image" accept="image/*" />
+      <button type="button" id="post-btn">Post</button>
+      <div style="clear: both;"></div>
+    </div>
 
+    <!-- Existing posts -->
+    {% for post in posts %}
+      <div class="post-card" data-post-id="{{ post.id }}">
+        <div class="post-header">
+          <img src="https://via.placeholder.com/40" alt="User Avatar" />
+          <div>
+            <strong>{{ post.username }}</strong><br />
+            <small>{{ post.timestamp }}</small>
+          </div>
+        </div>
+        <div class="post-body">
+          <p>{{ post.content }}</p>
+          {% if post.image %}
+            <img src="{{ url_for('post_image', post_id=post.id) }}" alt="Post Image" />
+          {% endif %}
+        </div>
+        <div class="post-footer">
+          <button class="like-btn" data-post-id="{{ post.id }}">
+            Like (<span class="like-count">{{ post.likes }}</span>)
+          </button>
+          <button class="comment-toggle-btn" data-post-id="{{ post.id }}">Comment</button>
+        </div>
+        <div class="comment-section" id="comment-section-{{ post.id }}">
+          <div class="comment-list">
+            {% for c in post.comments %}
+              <div class="comment">
+                <strong>{{ c.username }}</strong>: {{ c.comment }} <small>{{ c.timestamp }}</small>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="add-comment">
+            <input type="text" class="comment-input" placeholder="Add a comment..." />
+            <button class="add-comment-btn" data-post-id="{{ post.id }}">Post</button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
 </html>
