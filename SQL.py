@@ -100,14 +100,14 @@ def insert_post(username, content, timestamp, image_data=None):
 # function to retrieve user password and account type from user_details table
 def fetch_user_details(username, cursor):
 
-    cursor.execute("SELECT password, account_type FROM user_details WHERE username =?", (username,))
+    cursor.execute("SELECT password, account_type, org_school_name FROM user_details WHERE username =?", (username,))
 
     return cursor.fetchall()
 
 # function to retrieve user password and account type from org_details table
 def fetch_org_details(username, cursor):
 
-    cursor.execute("SELECT password, account_type FROM org_details WHERE username =?", (username,))
+    cursor.execute("SELECT password, account_type, org_school_name FROM org_details WHERE username =?", (username,))
 
     return cursor.fetchall()
 

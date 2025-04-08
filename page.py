@@ -386,7 +386,6 @@ def account(username):
 
 
 # USER MAIN CODE (Stefan Barbu)
-
 # Function to create a database connection
 def get_db_connection():
     conn = sqlite3.connect('database.db')
@@ -395,7 +394,17 @@ def get_db_connection():
 
 @app.route('/renderpage/<admin_username>')
 def renderpage(admin_username):
-    return render_template('userMain.html', username=admin_username)
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+    data = SQL.fetch_org_details(admin_username, cursor)
+    if not data:
+       data = SQL.fetch_user_details(admin_username, cursor)
+    connect_db.close()
+    return render_template('userMain.html',
+                           username=admin_username,
+                           var1 = data[0][1],
+                           var2 = data[0][2])
+
 
 # END OF USER MAIN CODE
 

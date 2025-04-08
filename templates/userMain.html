@@ -21,30 +21,39 @@
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <div class="sidebar-content">
-      <p><a href="#" onclick="window.location.reload();">My feed!</a></p>
+      <p><a href="/" >Home</a></p>
+        <!-- IF- Statement for different user accounts -->
+        {% if var1 == "standard" or var1 == "Student" or var1 == "Teacher" %}
+            <p><a href="/account/{{ username }}">User Account Page</a></p>
+        {% endif %}
+
+        {% if var1 == "Admin" %}
+            <p><a href="/admin/{{ username }}">Organization Panel</a></p>
+        {% endif %}
     </div>
   </nav>
 
   <!-- Main Content Area -->
   <div class="content">
 
-    <!-- Profile Section -->
-    <div class="profile-header">
-      <div class="banner"></div>
-      <div class="profile-info">
-        <img src="" alt="User Avatar" class="avatar" />
-        <div>
-          <h2>{{ username }}</h2>
-          <p class="bio">This is a short bio about the user or organization. You can update this in your settings.</p>
-        </div>
-      </div>
-    </div>
+  <!-- Organization Introduction -->
+  <div class="organization-info">
+    <h2>About {{ var2 }}</h2>
+    <p>Welcome to the official page for {{ var2 }}. Here, we share updates, upcoming events, and exciting news for our community. Stay tuned for exciting features coming soon!</p>
+    <p><em>At this stage, we are working on posting capabilities and will have exciting updates soon. Stay connected!</em></p>
+  </div>
 
+  <!-- Placeholder Section (Waffle) -->
+  <div class="waffle">
+    <h3>Coming Soon: Post Your Updates</h3>
+    <p>This space will be available for organizations to create posts, share images, and interact with followers.</p>
+    <p>We are currently building this feature to improve your experience. Keep checking back for updates!</p>
+  </div>
     <!-- Post Feed -->
     <div class="post-feed">
       <!-- Example Post 1 (Org post) -->
       <div class="post">
-        <h3>x</h3>
+        <h3>Coming soon! Stay tuned!</h3>
         <p></p>
       </div>
     </div>
