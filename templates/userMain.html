@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link id="style" href="../static/userMain.css" rel="stylesheet" type="text/css" />
+   <link href="../static/frame.css" rel="stylesheet" type="text/css">
   <title>My posts!</title>
 </head>
 <body>
@@ -16,11 +17,10 @@
             <a href="/">Sign Out</a>
         </div>
     </header>
+
   <!-- Sidebar Navigation -->
   <nav class="sidebar">
     <div class="sidebar-content">
-      <p><a href="#" onclick="showSection('users-section')" {% if active_section == 'users-section' %}class="active"{% endif %} id="users-link">Users</a></p>
-      <p><a href="#" onclick="showSection('organizations-section')" {% if active_section == 'organizations-section' %}class="active"{% endif %} id="organizations-link">Organisations</a></p>
       <p><a href="#" onclick="window.location.reload();">My feed!</a></p>
     </div>
   </nav>
@@ -32,7 +32,7 @@
     <div class="profile-header">
       <div class="banner"></div>
       <div class="profile-info">
-        <img src="https://via.placeholder.com/100" alt="User Avatar" class="avatar" />
+        <img src="" alt="User Avatar" class="avatar" />
         <div>
           <h2>{{ username }}</h2>
           <p class="bio">This is a short bio about the user or organization. You can update this in your settings.</p>
@@ -50,6 +50,5 @@
     </div>
 
   </div>
-
 </body>
 </html>
