@@ -386,24 +386,35 @@ def account(username):
 
 
 # USER MAIN CODE (Stefan Barbu)
-# Function to create a database connection
+
+# Function to establish a connection to the SQLite database ===
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
-    conn.row_factory = sqlite3.Row  # Enables dictionary-like row access
+    conn = sqlite3.connect('database.db')  # Connects to the database file
+    conn.row_factory = sqlite3.Row         # Enables row data to be accessed like dictionaries
     return conn
 
+# Route to render a user's organisation or personal profile page ===
 @app.route('/renderpage/<admin_username>')
 def renderpage(admin_username):
+    # Connect to the database
     connect_db = sqlite3.connect('database.db')
     cursor = connect_db.cursor()
+
+    # Try to fetch data assuming the user is an organisation admin
     data = SQL.fetch_org_details(admin_username, cursor)
+
+    # If no organisation data found, try fetching user account details instead
     if not data:
        data = SQL.fetch_user_details(admin_username, cursor)
+
+    # Close the database connection once data is retrieved
     connect_db.close()
+
+    # Render the appropriate user page, passing through:
     return render_template('userMain.html',
                            username=admin_username,
-                           var1 = data[0][1],
-                           var2 = data[0][2])
+                           var1 = data[0][1], # - var1 = user type (Teacher or student)
+                           var2 = data[0][2]) # var 2 = user type organization
 
 
 # END OF USER MAIN CODE

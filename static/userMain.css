@@ -1,25 +1,25 @@
-/* General Reset */
+/* ===== General Reset ===== */
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Arial, sans-serif; /* Default font across site */
 }
 
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
 }
 
-/* Updated Top Navigation Bar */
+/* ===== Top Navigation Bar ===== */
 .topnav {
-    overflow: hidden;
+    overflow: hidden;             /* Ensures floated elements are contained */
     padding: 10px;
-    background-color: #4CAF50;
+    background-color: #4CAF50;    /* Green background */
 }
 
 .topnav a {
-    float: right;
+    float: right;                 /* Aligns links to the right */
     color: white;
     text-decoration: none;
     margin-right: 20px;
@@ -28,61 +28,61 @@ body {
 }
 
 .topnav a:hover {
-    background-color: #ddd;
+    background-color: #ddd;       /* Light grey hover effect */
     color: black;
 }
 
 .topnav h1 {
     color: white;
     margin-left: 20px;
-    display: inline-block;
+    display: inline-block;        /* Allows h1 and links to sit on same line */
 }
 
-/* Sidebar Container */
+/* ===== Sidebar Navigation ===== */
 .sidebar {
-    position:absolute;
-    top:60px;
+    position: absolute;
+    top: 60px;                    /* Positioned just below topnav */
     left: 0;
     width: 200px;
-    height: calc(100% - 60px);
-    background-color: #808080;
+    height: calc(100% - 60px);    /* Fills remaining vertical space */
+    background-color: #808080;    /* Grey sidebar background */
     padding-top: 20px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
-/* Sidebar Content */
+/* ===== Sidebar Links ===== */
 .sidebar-content a {
     display: block;
     padding: 8px;
-    color: #ffffff;
+    color: #ffffff;               /* White text */
     text-decoration: none;
     border-radius: 5px;
     margin-bottom: 5px;
 }
 
 .sidebar-content a:hover {
-    background-color: #33add5;
+    background-color: #33add5;    /* Highlight on hover */
 }
 
 .sidebar-content a.active {
-    background-color: #33add5;
+    background-color: #33add5;    /* Active link styling */
     color: #ffffff;
 }
 
-/* Main Content Area */
+/* ===== Main Content Section ===== */
 .content {
-    margin-left: 210px;
+    margin-left: 210px;           /* Makes room for sidebar */
     padding: 20px;
-    background-color: #f4f4f4;
-    min-height: 100vh;
+    background-color: #f4f4f4;    /* Light background for contrast */
+    min-height: 100vh;            /* Ensures full page height */
 }
 
-/* Post Box Example */
+/* ===== Post Card Styling ===== */
 .post {
     background-color: white;
     border: 1px solid #ccc;
     padding: 15px;
     margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;           /* Soft rounded corners */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for elevation */
 }

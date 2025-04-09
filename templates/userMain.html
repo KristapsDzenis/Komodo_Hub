@@ -1,63 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Metadata for the page -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Linking CSS stylesheets for user and frame layout -->
   <link id="style" href="../static/userMain.css" rel="stylesheet" type="text/css" />
-   <link href="../static/frame.css" rel="stylesheet" type="text/css">
+  <link href="../static/frame.css" rel="stylesheet" type="text/css">
+
   <title>My posts!</title>
 </head>
 <body>
 
-    <!-- Navigation -->
+    <!-- Top navigation bar -->
     <header>
         <div class="topnav">
+            <!-- Logo or home link -->
             <a href="#home">Komodo Hub</a>
+
+            <!-- Displays a welcome message with the logged-in username -->
             <h1>Welcome, {{ username }}</h1>
+
+            <!-- Sign out link -->
             <a href="/">Sign Out</a>
         </div>
     </header>
 
-  <!-- Sidebar Navigation -->
-  <nav class="sidebar">
-    <div class="sidebar-content">
-      <p><a href="/" >Home</a></p>
-        <!-- IF- Statement for different user accounts -->
-        {% if var1 == "standard" or var1 == "Student" or var1 == "Teacher" %}
-            <p><a href="/account/{{ username }}">User Account Page</a></p>
-        {% endif %}
+    <!-- Sidebar navigation for users to navigate between pages -->
+    <nav class="sidebar">
+        <div class="sidebar-content">
 
-        {% if var1 == "Admin" %}
-            <p><a href="/admin/{{ username }}">Organization Panel</a></p>
-        {% endif %}
+            <!-- Link back to main homepage -->
+            <p><a href="/" >Home</a></p>
+
+            <!-- Show user account link based on user role -->
+            {% if var1 == "standard" or var1 == "Student" or var1 == "Teacher" %}
+                <p><a href="/account/{{ username }}">User Account Page</a></p>
+            {% endif %}
+
+            <!-- Show organisation admin panel only for Admin users -->
+            {% if var1 == "Admin" %}
+                <p><a href="/admin/{{ username }}">Organization Panel</a></p>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Main content area -->
+    <div class="content">
+
+        <!-- Introduction section for the organisation -->
+        <div class="organization-info">
+            <h2>About {{ var2 }}</h2>
+            <p>Welcome to the official page for {{ var2 }}. Here, we share updates, upcoming events, and exciting news for our community. Stay tuned for exciting features coming soon!</p>
+            <p><em>At this stage, we are working on posting capabilities and will have exciting updates soon. Stay connected!</em></p>
+        </div>
+
+        <!-- Placeholder ‘waffle’ section to represent future posting functionality -->
+        <div class="waffle">
+            <h3>Coming Soon: Post Your Updates</h3>
+            <p>This space will be available for organizations to create posts, share images, and interact with followers.</p>
+            <p>We are currently building this feature to improve your experience. Keep checking back for updates!</p>
+        </div>
+
+        <!-- Post feed section - currently placeholder content -->
+        <div class="post-feed">
+            <!-- Example placeholder post -->
+            <div class="post">
+                <h3>Coming soon! Stay tuned!</h3>
+                <p></p>
+            </div>
+        </div>
+
     </div>
-  </nav>
-
-  <!-- Main Content Area -->
-  <div class="content">
-
-  <!-- Organization Introduction -->
-  <div class="organization-info">
-    <h2>About {{ var2 }}</h2>
-    <p>Welcome to the official page for {{ var2 }}. Here, we share updates, upcoming events, and exciting news for our community. Stay tuned for exciting features coming soon!</p>
-    <p><em>At this stage, we are working on posting capabilities and will have exciting updates soon. Stay connected!</em></p>
-  </div>
-
-  <!-- Placeholder Section -->
-  <div class="waffle">
-    <h3>Coming Soon: Post Your Updates</h3>
-    <p>This space will be available for organizations to create posts, share images, and interact with followers.</p>
-    <p>We are currently building this feature to improve your experience. Keep checking back for updates!</p>
-  </div>
-    <!-- Post Feed -->
-    <div class="post-feed">
-      <!-- Example Post 1 (Org post) -->
-      <div class="post">
-        <h3>Coming soon! Stay tuned!</h3>
-        <p></p>
-      </div>
-    </div>
-
-  </div>
 </body>
 </html>
