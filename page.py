@@ -9,7 +9,7 @@ from datetime import datetime
 import base64
 
 app = Flask(__name__)
-
+app.secret_key = "123456789"
 
 
 # opens web browser with specified address with flask app
@@ -20,7 +20,14 @@ def open_browser():
 # renders index page, '/' means first page rendered with flask
 @app.route('/')
 def index():
-    return render_template('index.html')
+    posts = SQL.get_posts()
+    for post in posts:
+        post['comments'] = SQL.get_comments(post['id'])
+    current_user = session.get('username')
+    error = request.args.get('error')
+    return render_template('index.html', posts=posts, current_user=current_user, error=error)
+
+
 
 # ACCOUNT CREATION AND LOGIN CODE (Kristaps Dzenis)
 
@@ -29,36 +36,55 @@ def index():
 def login():
     username = request.form.get('Username')
     password = request.form.get('Password')
-    source_page = request.form.get('source_page')
-    print(username, password, source_page)          # debugger
+    # For simplicity, we ignore "source_page" now.
+    if SQL.check_user_credentials(username, password) == "ok":
+        session['username'] = username  # Set the logged-in user in session
+        return redirect(url_for('index'))
+    else:
+        return render_template('index.html', error="Invalid username or password")
+#def login():
+    #connect_db = sqlite3.connect('database.db')
+    #cursor = connect_db.cursor()
+    #username = request.form.get('Username')
+    #password = request.form.get('Password')
+    #source_page = request.form.get('source_page')
+    #print(username, password, source_page)          # debugger
 
     # retrieve user password and account type from db based on username
-    connect_db = sqlite3.connect('database.db')  # connect to database
-    cursor = connect_db.cursor()
-    data = SQL.fetch_user_details(username, cursor)     # check user_details for details
-    if not data:
-        data = SQL.fetch_org_details(username, cursor)      # check org_details for details
-        if not data:
-            # if username not found throw error
-            if source_page == "index.html":
-                return render_template('index.html', error="Invalid username or password")
-            if source_page == "accountCreate.html":
-                return render_template('accountCreate.html', error="Invalid username or password")
-    print(data)         # debugger
-    connect_db.close()  # close database
+    #connect_db = sqlite3.connect('database.db')  # connect to database
+    #cursor = connect_db.cursor()
+    #data = SQL.fetch_user_details(username, cursor)     # check user_details for details
+    #if not data:
+    #    data = SQL.fetch_org_details(username, cursor)      # check org_details for details
+    #    if not data:
+    #        # if username not found throw error
+   #         if source_page == "index.html":
+    #            return render_template('index.html', error="Invalid username or password")
+   #        if source_page == "accountCreate.html":
+    #            return render_template('accountCreate.html', error="Invalid username or password")
+    #print(data)         # debugger
+    #connect_db.close()  # close database
 
     # check password and if password correct direct to correct page based on account type
-    if password == data[0][0]:
-        if data[0][1] in ["Standard", "Teacher", "Student"]:
-            return redirect(url_for('account', username=username))
-        if data[0][1] == "Admin":
-            return redirect(url_for('render_admin_panel', username=username))
+    #if password == data[0][0]:
+        #if data[0][1] in ["Standard", "Teacher", "Student"]:
+        #    return redirect(url_for('account', username=username))
+        #if data[0][1] == "Admin":
+            #return redirect(url_for('render_admin_panel', username=username))
     # if password incorrect throw error
-    else:
-        if source_page == "index.html":
-            return render_template('index.html', error="Invalid username or password")
-        if source_page == "accountCreate.html":
-            return render_template('accountCreate.html', error="Invalid username or password")
+    #else:
+        #if source_page == "index.html":
+        #    return render_template('index.html', error="Invalid username or password")
+        #if source_page == "accountCreate.html":
+        #    return render_template('accountCreate.html', error="Invalid username or password")
+
+
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('index'))
 
 # renders account creation page
 @app.route('/accountCreate.html')
@@ -120,13 +146,29 @@ def create_org():
 # END OF ACCOUNT CREATION CODE
 
 # Main page code (Mykyta Bilous)
-   # Everyone can see the feed
-    posts = SQL.get_posts()
+   # Everyone can see the feed\
+
+def index():
+    connect_db = sqlite3.connect('database.db')
+    cursor = connect_db.cursor()
+
+    # Fetch posts from the database
+    posts = SQL.fetch_posts(cursor)
+    processed_posts = []
     for post in posts:
-        post['comments'] = SQL.get_comments(post['id'])
-    current_user = session.get('username')  # or None if not logged in
-    error = request.args.get('error')       # optional error message from login
-    return render_template('index.html', posts=posts, current_user=current_user, error=error)
+        encoded_image = None
+        if post[2]:
+            encoded_image = base64.b64encode(post[2]).decode('utf-8')
+        processed_posts.append({
+            'author': post[0],
+            'content': post[1],
+            'image': encoded_image,
+            'likes': post[3],
+            'hasImage': bool(post[2])
+        })
+
+    connect_db.close()
+    return render_template('index.html', posts=processed_posts)#
 
 @app.route('/post_image/<int:post_id>')
 def post_image(post_id):
@@ -158,6 +200,8 @@ def new_post():
             "hasImage": bool(image_data)
         }
     })
+        
+
 
 @app.route('/like_post', methods=['POST'])
 def like_post():

@@ -107,25 +107,30 @@
 <body>
 
     <div class="topnav">
+      <div class="nav-left">
         <a href="/">Komodo Hub</a>
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% endif %}
-
-        <form action="/login" method="post">
-            <label for="UName" class="" ></label>
-            <input type="text" id="UName" maxlength="15" minlength="6" name="Username" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
-             placeholder="Username">
-            <label for="Pword" class="" ></label>
-            <input type="password" id="Pword" maxlength="15" minlength="6" name="Password" pattern="[[(A-Za-z)(0-9)\s]{6,15}"
-            placeholder="Password">
-
+      </div>
+    
+      <div class="nav-right">
+        {% if current_user %}
+          <!-- If user is logged in, show Dashboard, greeting, and Sign Out -->
+          <a href="/account/{{ current_user }}" class="nav-button">Dashboard</a>
+          <h1>Hello, {{ current_user }}</h1>
+          <a href="{{ url_for('logout') }}" class="sign-out">Sign Out</a>
+        {% else %}
+          <!-- If not logged in, show the login form and Sign Up link -->
+          {% if error %}
+            <p style="color: red; margin-right:10px;">{{ error }}</p>
+          {% endif %}
+          <form action="/login" method="post" class="login-form">
+            <input type="text" name="Username" placeholder="Username" required>
+            <input type="password" name="Password" placeholder="Password" required>
             <input type="hidden" name="source_page" value="index.html">
-
             <button type="submit" class="signIn">Sign In</button>
-        </form>
-
-        <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
+          </form>
+          <a href="{{ url_for('render_acc_create_page') }}">Sign Up</a>
+        {% endif %}
+      </div>
     </div>
 
        <!-- Everyone sees the feed container -->
@@ -176,6 +181,134 @@
       </div>
     {% endfor %}
   </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Determine login state from the server
+        var isLoggedIn = {{ 'true' if current_user else 'false' }};
+        
+        // New Post button event listener
+        const postBtn = document.getElementById("post-btn");
+        postBtn.addEventListener("click", function() {
+            if (!isLoggedIn) {
+                alert("You need to sign in or register first.");
+                return;
+            }
+            const content = document.getElementById("new-post-text").value.trim();
+            if (!content) {
+                alert("Post cannot be empty.");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("content", content);
+            const imageFile = document.getElementById("new-post-image").files[0];
+            if (imageFile) {
+                formData.append("image", imageFile);
+            }
+            fetch("/new_post", {
+                method: "POST",
+                body: formData,
+                credentials: "include"
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Refresh the page to show the new post
+                } else {
+                    alert("Failed to add post.");
+                }
+            })
+            .catch(err => {
+                console.error("Error adding post:", err);
+                alert("Failed to add post.");
+            });
+        });
+
+        // Function to attach like and comment event listeners to a post card
+        function attachPostListeners(postCard) {
+            const postId = postCard.getAttribute("data-post-id");
+            const likeBtn = postCard.querySelector(".like-btn");
+            const commentToggleBtn = postCard.querySelector(".comment-toggle-btn");
+            const addCommentBtn = postCard.querySelector(".add-comment-btn");
+
+            // Like event
+            likeBtn.addEventListener("click", function() {
+                if (!isLoggedIn) {
+                    alert("You need to sign in or register first.");
+                    return;
+                }
+                const isLiked = likeBtn.classList.contains("liked");
+                fetch("/like_post", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ post_id: postId })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        likeBtn.querySelector(".like-count").textContent = data.new_likes;
+                        if (isLiked) {
+                            likeBtn.classList.remove("liked");
+                        } else {
+                            likeBtn.classList.add("liked");
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Error updating like:", err);
+                    alert("Failed to update like.");
+                });
+            });
+
+            // Toggle comment section visibility
+            commentToggleBtn.addEventListener("click", function() {
+                const commentSection = document.getElementById("comment-section-" + postId);
+                commentSection.style.display = (commentSection.style.display === "none" || !commentSection.style.display)
+                    ? "block"
+                    : "none";
+            });
+
+            // Add comment event
+            addCommentBtn.addEventListener("click", function() {
+                if (!isLoggedIn) {
+                    alert("You need to sign in or register first.");
+                    return;
+                }
+                const commentInput = postCard.querySelector(".comment-input");
+                const commentText = commentInput.value.trim();
+                if (!commentText) {
+                    alert("Comment cannot be empty.");
+                    return;
+                }
+                fetch("/add_comment", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ post_id: postId, comment: commentText })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const commentList = postCard.querySelector(".comment-list");
+                        const c = data.comment;
+                        const commentDiv = document.createElement("div");
+                        commentDiv.className = "comment";
+                        commentDiv.innerHTML = `<strong>${c.username}</strong>: ${c.comment} <small>${c.timestamp}</small>`;
+                        commentList.appendChild(commentDiv);
+                        commentInput.value = "";
+                    }
+                })
+                .catch(err => {
+                    console.error("Error adding comment:", err);
+                    alert("Failed to add comment.");
+                });
+            });
+        }
+
+        // Attach event listeners to all existing post cards
+        document.querySelectorAll(".post-card").forEach(attachPostListeners);
+    });
+  </script>
+  
 
 </body>
 </html>
