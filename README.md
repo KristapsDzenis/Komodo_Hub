@@ -4,9 +4,9 @@ Komodo Hub project produced by 5 member 2nd year university student team in 8 we
 To run the project, run page.py file
 
 Created accounts is database:
-  Organisation account: username: KomodoHub
-                        password: qwerty
-  User account:         username: user1234
-                        password: qwerty
+  Organisation account: username: KomodoHub,
+                        password: qwerty,
+  ;User account:         username: user1234,
+                        password: qwerty,
 
-Feel free to create your own account!
+;Feel free to create your own account!
