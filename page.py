@@ -24,15 +24,16 @@ def index():
     for post in posts:
         post['comments'] = SQL.get_comments(post['id'])
     current_user = session.get('username')
+    account_type = session.get('account_type')
     error = request.args.get('error')
-    return render_template('index.html', posts=posts, current_user=current_user, error=error)
+    return render_template('index.html', posts=posts, current_user=current_user, account_type=account_type, error=error)
 
 
 
 # ACCOUNT CREATION AND LOGIN CODE (Kristaps Dzenis)
 
 # function to process user login details and direct to correct page
-@app.route('/login', methods=['POST'])
+"""@app.route('/login', methods=['POST'])
 def login():
     username = request.form.get('Username')
     password = request.form.get('Password')
@@ -41,42 +42,41 @@ def login():
         session['username'] = username  # Set the logged-in user in session
         return redirect(url_for('index'))
     else:
-        return render_template('index.html', error="Invalid username or password")
-#def login():
-    #connect_db = sqlite3.connect('database.db')
-    #cursor = connect_db.cursor()
-    #username = request.form.get('Username')
-    #password = request.form.get('Password')
-    #source_page = request.form.get('source_page')
-    #print(username, password, source_page)          # debugger
+        return render_template('index.html', error="Invalid username or password")"""
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('Username')
+    password = request.form.get('Password')
+    source_page = request.form.get('source_page')
+    print(username, password, source_page)          # debugger
 
     # retrieve user password and account type from db based on username
-    #connect_db = sqlite3.connect('database.db')  # connect to database
-    #cursor = connect_db.cursor()
-    #data = SQL.fetch_user_details(username, cursor)     # check user_details for details
-    #if not data:
-    #    data = SQL.fetch_org_details(username, cursor)      # check org_details for details
-    #    if not data:
-    #        # if username not found throw error
-   #         if source_page == "index.html":
-    #            return render_template('index.html', error="Invalid username or password")
-   #        if source_page == "accountCreate.html":
-    #            return render_template('accountCreate.html', error="Invalid username or password")
-    #print(data)         # debugger
-    #connect_db.close()  # close database
+    connect_db = sqlite3.connect('database.db')  # connect to database
+    cursor = connect_db.cursor()
+    data = SQL.fetch_user_details(username, cursor)     # check user_details for details
+    if not data:
+        data = SQL.fetch_org_details(username, cursor)      # check org_details for details
+        if not data:
+            #if username not found throw error
+            if source_page == "index.html":
+                return render_template('index.html', error="Invalid username or password")
+            if source_page == "accountCreate.html":
+                return render_template('accountCreate.html', error="Invalid username or password")
+    print(data)         # debugger
+    connect_db.close()  # close database
 
     # check password and if password correct direct to correct page based on account type
-    #if password == data[0][0]:
-        #if data[0][1] in ["Standard", "Teacher", "Student"]:
-        #    return redirect(url_for('account', username=username))
-        #if data[0][1] == "Admin":
-            #return redirect(url_for('render_admin_panel', username=username))
+    if SQL.check_user_credentials(username, password) == "ok":
+        session['username'] = username  # Set the logged-in user in session
+        session['account_type'] = data[0][1]
+        return redirect(url_for('index'))
     # if password incorrect throw error
-    #else:
-        #if source_page == "index.html":
-        #    return render_template('index.html', error="Invalid username or password")
-        #if source_page == "accountCreate.html":
-        #    return render_template('accountCreate.html', error="Invalid username or password")
+    else:
+        if source_page == "index.html":
+            return render_template('index.html', error="Invalid username or password")
+        if source_page == "accountCreate.html":
+            return render_template('accountCreate.html', error="Invalid username or password")
 
 
 

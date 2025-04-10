@@ -199,6 +199,9 @@ def check_user_credentials(username, password):
     c = conn.cursor()
     c.execute("SELECT password FROM user_details WHERE username=?", (username,))
     row = c.fetchone()
+    if not row:
+        c.execute("SELECT password FROM org_details WHERE username=?", (username,))
+        row = c.fetchone()
     conn.close()
     if not row:
         return "username_not_found"

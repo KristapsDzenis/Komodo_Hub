@@ -51,10 +51,10 @@ body {
 
 /* The greeting can have smaller text than an H1 if you prefer. */
 .nav-right h1 {
-  font-size: 1.1rem;
-  color: #ffffff;
-  margin: 0;
-
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin: 0;
+}
 h1
 {
     color: #ffffff;
@@ -115,4 +115,4 @@ h1
 .signIn:hover
 {
     background-color: #3cb371;
-}}
+}

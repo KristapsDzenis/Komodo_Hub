@@ -113,9 +113,16 @@
     
       <div class="nav-right">
         {% if current_user %}
-          <!-- If user is logged in, show Dashboard, greeting, and Sign Out -->
-          <a href="/account/{{ current_user }}" class="nav-button">Dashboard</a>
           <h1>Hello, {{ current_user }}</h1>
+          <!-- If user is logged in, show Dashboard, greeting, and Sign Out -->
+          {% if account_type == "Standard" or account_type == "Student" or account_type == "Teacher" %}
+              <a href="/account/{{ current_user }}" class="signIn">Dashboard</a>
+          {% endif %}
+
+          {% if account_type == "Admin" %}
+              <a href="/admin/{{ current_user }}" class="signIn">Dashboard</a>
+          {% endif %}
+
           <a href="{{ url_for('logout') }}" class="sign-out">Sign Out</a>
         {% else %}
           <!-- If not logged in, show the login form and Sign Up link -->
